@@ -17,7 +17,7 @@ api.get('/', (req, res) => {
   });
 });
 
-// api.use('/users', userRouter);
+api.use('/users', userRouter);
 
 api.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
