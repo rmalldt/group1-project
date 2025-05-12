@@ -1,10 +1,9 @@
 const User = require('../models/userModels');
-const db = require('../../database/connect');
+const db = require('../db/connect');
 
-jest.mock('../../database/connect'); // Mock the DB
+jest.mock('../db/connect'); // Mock the DB
 
 describe('User Model', () => {
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -19,7 +18,7 @@ describe('User Model', () => {
           password: 'hashed123',
           start_location: '120',
           isAdmin: false,
-          journeys: []
+          journeys: [],
         },
         {
           id: 2,
@@ -28,8 +27,8 @@ describe('User Model', () => {
           password: 'hashed456',
           start_location: '200',
           isAdmin: true,
-          journeys: []
-        }
+          journeys: [],
+        },
       ];
 
       db.query.mockResolvedValueOnce({ rows: mockUsers });
@@ -46,7 +45,7 @@ describe('User Model', () => {
     it('should throw an error if no users are found', async () => {
       db.query.mockResolvedValueOnce({ rows: [] });
 
-      await expect(User.getAll()).rejects.toThrow("No users available.");
+      await expect(User.getAll()).rejects.toThrow('No users available.');
     });
   });
 
@@ -59,7 +58,7 @@ describe('User Model', () => {
         password: 'hashed123',
         start_location: '120',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       };
 
       db.query.mockResolvedValueOnce({ rows: [mockUser] });
@@ -69,13 +68,18 @@ describe('User Model', () => {
       expect(result).toBeInstanceOf(User);
       expect(result.id).toBe(1);
       expect(result.username).toBe('alice');
-      expect(db.query).toHaveBeenCalledWith("SELECT * FROM users WHERE id = $1;", [1]);
+      expect(db.query).toHaveBeenCalledWith(
+        'SELECT * FROM users WHERE id = $1;',
+        [1]
+      );
     });
 
     it('should throw an error if user not found', async () => {
       db.query.mockResolvedValueOnce({ rows: [] });
 
-      await expect(User.getOneById(999)).rejects.toThrow("Unable to locate user.");
+      await expect(User.getOneById(999)).rejects.toThrow(
+        'Unable to locate user.'
+      );
     });
   });
 
@@ -84,7 +88,7 @@ describe('User Model', () => {
       const inputData = {
         username: 'charlie',
         email: 'charlie@example.com',
-        password: 'securePass'
+        password: 'securePass',
       };
 
       const insertResponse = {
@@ -94,7 +98,7 @@ describe('User Model', () => {
         password: 'securePass',
         start_location: '10',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       };
 
       const fetchResponse = {
@@ -104,7 +108,7 @@ describe('User Model', () => {
         password: 'securePass',
         start_location: '10',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       };
 
       db.query
@@ -129,7 +133,7 @@ describe('User Model', () => {
         password: 'init',
         start_location: '50',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       });
 
       const updatedRow = {
@@ -139,7 +143,7 @@ describe('User Model', () => {
         password: 'updatedpass',
         start_location: '100',
         isAdmin: true,
-        journeys: []
+        journeys: [],
       };
 
       db.query.mockResolvedValueOnce({ rows: [updatedRow] });
@@ -149,15 +153,16 @@ describe('User Model', () => {
         email: 'delta_new@web.com',
         password: 'updatedpass',
         start_location: '100',
-        isAdmin: true
+        isAdmin: true,
       });
 
       expect(result).toBeInstanceOf(User);
       expect(result.username).toBe('delta_new');
-      expect(result.start_location).toBe(100);
-      expect(db.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE users'), [
-        'delta_new', 'delta_new@web.com', 'updatedpass', '100', true, 5
-      ]);
+      expect(result.start_location).toBe('100');
+      expect(db.query).toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE users'),
+        ['delta_new', 'delta_new@web.com', 'updatedpass', '100', true, 5]
+      );
     });
 
     it('should throw an error if update fails', async () => {
@@ -168,12 +173,14 @@ describe('User Model', () => {
         password: 'pass',
         start_location: '10',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       });
 
       db.query.mockResolvedValueOnce({ rows: [] });
 
-      await expect(user.update({ username: 'fail_update' })).rejects.toThrow("Unable to update user.");
+      await expect(user.update({ username: 'fail_update' })).rejects.toThrow(
+        'Unable to update user.'
+      );
     });
   });
 
@@ -186,7 +193,7 @@ describe('User Model', () => {
         password: 'pass',
         start_location: '20',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       };
 
       db.query.mockResolvedValueOnce({ rows: [mockUser] });
@@ -212,10 +219,12 @@ describe('User Model', () => {
         password: 'nope',
         start_location: '40',
         isAdmin: false,
-        journeys: []
+        journeys: [],
       });
 
-      await expect(user.destroy({ id: 6 })).rejects.toThrow("Unable to delete user.");
+      await expect(user.destroy({ id: 6 })).rejects.toThrow(
+        'Unable to delete user.'
+      );
     });
   });
 });
