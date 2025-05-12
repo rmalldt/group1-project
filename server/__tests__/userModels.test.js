@@ -148,7 +148,7 @@ describe('User Model', () => {
         username: 'delta_new',
         email: 'delta_new@web.com',
         password: 'updatedpass',
-        start_location: '50',
+        start_location: '100',
         isAdmin: true
       });
 
@@ -156,7 +156,7 @@ describe('User Model', () => {
       expect(result.username).toBe('delta_new');
       expect(result.start_location).toBe(100);
       expect(db.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE users'), [
-        'delta_new', 'delta_new@web.com', 'updatedpass', 50, true, 5
+        'delta_new', 'delta_new@web.com', 'updatedpass', '100', true, 5
       ]);
     });
 
