@@ -1,4 +1,9 @@
-server/node_modules
-database/node_modules
+node_modules
+coverage
 .env
-server/coverage
+client/dist
+client/.parcel-cache
+server/Dockerfile
+server/.dockerignore
+.DS_Store
+.vscode
