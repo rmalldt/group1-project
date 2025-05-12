@@ -76,13 +76,13 @@ describe('User Controller', () => {
       expect(res.json).toHaveBeenCalledWith(newUser);
     });
 
-    it('should handle creation error with status 404', async () => {
+    it('should handle creation error with status 400', async () => {
       req.body = { username: 'fail', password: 'fail' };
       User.create.mockRejectedValue(new Error('Creation error'));
 
       await userController.signup(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ error: 'Creation error' });
     });
   });
