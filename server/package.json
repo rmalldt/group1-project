@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "nodemon -L ./src/index.js",
+    "dev": "cross-env NODE_ENV=dev nodemon -L ./src/index.js",
     "start": "node ./src/index.js",
-    "setup-db": "node ./src/db/setup.js",
+    "setup-db": "cross-env NODE_ENV=dev node ./src/db/setup.js",
     "test:dev": "jest --watchAll --detectOpenHandles --runInBand --verbose",
     "test": "jest --detectOpenHandles --runInBand --verbose",
     "coverage": "jest --coverage"
@@ -17,6 +17,7 @@
     "pg": "^8.15.6"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.10"
   }
 }
