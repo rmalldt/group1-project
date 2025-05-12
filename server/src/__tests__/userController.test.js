@@ -4,14 +4,13 @@ const userController = require('../controllers/userController');
 jest.mock('../models/userModels');
 
 describe('User Controller', () => {
-
   let req, res;
 
   beforeEach(() => {
     req = {};
     res = {
       status: jest.fn(() => res),
-      json: jest.fn()
+      json: jest.fn(),
     };
     jest.clearAllMocks();
   });
@@ -64,7 +63,11 @@ describe('User Controller', () => {
 
   describe('signup', () => {
     it('should register a new user and return it with status 201', async () => {
-      req.body = { username: 'new', email: 'new@example.com', password: 'secret' };
+      req.body = {
+        username: 'new',
+        email: 'new@example.com',
+        password: 'secret',
+      };
       const newUser = { id: 3, ...req.body };
 
       User.create.mockResolvedValue(newUser);
@@ -93,7 +96,13 @@ describe('User Controller', () => {
       req.body = { username: 'updated', start_location: 'new location' };
 
       const mockUser = {
-        update: jest.fn().mockResolvedValue({ id: 5, username: 'updated', start_location: 'new location' })
+        update: jest
+          .fn()
+          .mockResolvedValue({
+            id: 5,
+            username: 'updated',
+            start_location: 'new location',
+          }),
       };
 
       User.getOneById.mockResolvedValue(mockUser);
@@ -103,7 +112,11 @@ describe('User Controller', () => {
       expect(User.getOneById).toHaveBeenCalledWith(5);
       expect(mockUser.update).toHaveBeenCalledWith(req.body);
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ id: 5, username: 'updated', start_location: 'new location' });
+      expect(res.json).toHaveBeenCalledWith({
+        id: 5,
+        username: 'updated',
+        start_location: 'new location',
+      });
     });
 
     it('should return 404 if update fails', async () => {
@@ -122,7 +135,7 @@ describe('User Controller', () => {
       req.params = { id: '7' };
 
       const mockUser = {
-        destroy: jest.fn().mockResolvedValue({ success: true })
+        destroy: jest.fn().mockResolvedValue({ success: true }),
       };
 
       User.getOneById.mockResolvedValue(mockUser);

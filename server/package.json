@@ -2,10 +2,10 @@
   "scripts": {
     "dev": "nodemon -L ./src/index.js",
     "start": "node ./src/index.js",
-    "test": "jest",
-    "test:client": "jest --config=client/jest.config.js --coverage",
-    "coverage": "jest --coverage",
-    "setup-db": "node ./database/setup.js"
+    "setup-db": "node ./src/db/setup.js",
+    "test:dev": "jest --watchAll --detectOpenHandles --runInBand --verbose",
+    "test": "jest --detectOpenHandles --runInBand --verbose",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

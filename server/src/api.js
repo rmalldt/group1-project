@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const logger = require('./middleware/logger');
-// const userRouter = require('../routes/userRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const api = express();
 

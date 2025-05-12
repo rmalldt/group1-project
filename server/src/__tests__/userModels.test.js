@@ -1,7 +1,7 @@
 const User = require('../models/userModels');
-const db = require('../../../database/connect');
+const db = require('../db/connect');
 
-jest.mock('../../database/connect'); // Mock the DB
+jest.mock('../db/connect'); // Mock the DB
 
 describe('User Model', () => {
   afterEach(() => {
@@ -158,7 +158,7 @@ describe('User Model', () => {
 
       expect(result).toBeInstanceOf(User);
       expect(result.username).toBe('delta_new');
-      expect(result.start_location).toBe(100);
+      expect(result.start_location).toBe('100');
       expect(db.query).toHaveBeenCalledWith(
         expect.stringContaining('UPDATE users'),
         ['delta_new', 'delta_new@web.com', 'updatedpass', '100', true, 5]
