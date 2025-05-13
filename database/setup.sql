@@ -6,10 +6,10 @@ DROP TABLE IF EXISTS isochrone;
 -- USERS
 CREATE TABLE users (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(50) UNIQUE NOT NULL,
-    start_location VARCHAR(8) NOT NULL,
+    username TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT UNIQUE NOT NULL,
+    start_location TEXT NOT NULL,
     isAdmin BOOLEAN DEFAULT FALSE,
     journeys INT[] DEFAULT '{}'
 );
@@ -17,8 +17,8 @@ CREATE TABLE users (
 -- EV DATA
 CREATE TABLE ev (
     ev_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    brand VARCHAR(50) NOT NULL,
-    model VARCHAR(50) NOT NULL,
+    brand TEXT NOT NULL,
+    model TEXT NOT NULL,
     top_speed_kmh INT NOT NULL,
     combined_wltp_range_km NUMERIC NOT NULL,
     battery_capacity_kwh NUMERIC NOT NULL,
