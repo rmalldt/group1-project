@@ -5,28 +5,51 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25heWxvcjExIiwiYSI6ImNtYW1iZHZ3MTBoN3oyaXM0d
         style:
           'mapbox://styles/mapbox/streets-v12', // Specify which map style to use
         center: [-0.021249, 51.545141], // Specify the starting position | THIS WILL CHANGE DYNAMICALLY DEPENDING ON THE LOCATION ADDED BY THE USER
-        zoom: 15 // Specify the starting zoom
+        zoom: 15 
     });
 
-    // Create constants to use in getIso()
-const urlBase = 'https://api.mapbox.com/isochrone/v1/mapbox/';
+const params = document.getElementById('params');
+
 const lon = -0.021249;
 const lat = 51.545141; //these will be replaced with the user's location
-const profile = 'driving'; // Set the default routing profile
-const minutes = 10; // Set the default duration
+let minutes = 10; // Set the default duration
 
-// Create a function that sets up the Isochrone API query then makes an fetch call
+const marker = new mapboxgl.Marker({
+    color: '#314ccd'
+  });
+  
+  // Create a LngLat object to use in the marker initialization
+  // https://docs.mapbox.com/mapbox-gl-js/api/#lnglat
+  const lngLat = {
+    lon: lon,
+    lat: lat
+  };
+
+  // Create a function that sets up the Isochrone API query then makes an fetch call
 async function getIso() {
-  const query = await fetch(
-    `${urlBase}${profile}/${lon},${lat}?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`,
-    { method: 'GET' }
-  );
-  const data = await query.json();
-  map.getSource('iso').setData(data);
-}
+    const query = await fetch(
+      `https://api.mapbox.com/isochrone/v1/mapbox/driving/${lon},${lat}?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`,
+      { method: 'GET' }
+    );
+    const data = await query.json();
+    map.getSource('iso').setData(data);
+  }
+  
+
+ // When a user changes the value of profile or duration by clicking a button, change the parameter's value and make the API query again
+ params.addEventListener('change', (event) => {
+    if (event.target.name === 'profile') {
+      profile = event.target.value;
+    } else if (event.target.name === 'duration') {
+      minutes = event.target.value;
+    }
+    getIso();
+  });
+
 
 map.on('load', () => {
     // When the map loads, add the source and layer
+
     map.addSource('iso', {
       type: 'geojson',
       data: {
@@ -34,6 +57,7 @@ map.on('load', () => {
         features: []
       }
     });
+
   
     map.addLayer(
       {
@@ -45,12 +69,14 @@ map.on('load', () => {
         paint: {
           // The fill color for the layer is set to a light purple
           'fill-color': '#5a3fc0',
-          'fill-opacity': 0.3
+          'fill-opacity': 0.5
         }
       },
       'poi-label'
     );
-  
-    // Make the API call
+
+    marker.setLngLat(lngLat).addTo(map);
+    
     getIso();
+
   });
