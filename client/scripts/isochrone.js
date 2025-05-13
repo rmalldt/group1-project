@@ -9,10 +9,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY25heWxvcjExIiwiYSI6ImNtYW1iZHZ3MTBoN3oyaXM0d
     });
 
 const params = document.getElementById('params');
+let carmodel = 'Tesla3'
 
 const lon = -0.021249;
 const lat = 51.545141; //these will be replaced with the user's location
-let meters = 1000; // Set the default duration
+let range = 448000; // Set the default duration
 
 const marker = new mapboxgl.Marker({
     color: '#314ccd'
@@ -28,24 +29,22 @@ const marker = new mapboxgl.Marker({
   // Create a function that sets up the Isochrone API query then makes an fetch call
 async function getIso() {
     const query = await fetch(
-      `https://api.mapbox.com/isochrone/v1/mapbox/driving/${lon},${lat}?contours_meters=${meters}&polygons=true&access_token=${mapboxgl.accessToken}`,
+      `https://api.mapbox.com/isochrone/v1/mapbox/driving/${lon},${lat}?contours_meters=${range}&polygons=true&access_token=${mapboxgl.accessToken}`,
       { method: 'GET' }
     );
     const data = await query.json();
     map.getSource('iso').setData(data);
   }
   
-
- // When a user changes the value of profile or duration by clicking a button, change the parameter's value and make the API query again
- params.addEventListener('change', (event) => {
-    if (event.target.name === 'profile') {
-      profile = event.target.value;
-    } else if (event.target.name === 'distance') {
-      meters = event.target.value;
+  
+  params.addEventListener('change', (event) => {
+    if (event.target.name === 'weather') {
+      range = event.target.value;
+    } else if (event.target.name === 'passengers') {
+      range = event.target.value;
     }
     getIso();
   });
-
 
 map.on('load', () => {
     // When the map loads, add the source and layer
