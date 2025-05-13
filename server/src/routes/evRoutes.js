@@ -4,6 +4,7 @@ const evController = require('../controllers/evController');
 const evRouter = Router();
 
 evRouter.get('/', evController.getAll);
-evRouter.get('/:evModel', evController.getEvByModel);
+evRouter.get('/model/:model', evController.getEvByModel);
+evRouter.get('/brand/:brand', evController.getAllByBrand);
 
 module.exports = evRouter;

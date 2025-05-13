@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS isochrone;
 
 -- USERS
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(50) UNIQUE NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE users (
 
 -- EV DATA
 CREATE TABLE ev (
-    ev_id SERIAL PRIMARY KEY,
+    ev_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     brand VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
     top_speed_kmh INT NOT NULL,
@@ -41,7 +41,7 @@ VALUES
 
 -- MAP REQUEST
 CREATE TABLE map_request (
-    request_id SERIAL PRIMARY KEY,
+    request_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     latitude NUMERIC(9,6) NOT NULL,
     longitude NUMERIC(9,6) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE map_request (
 
 -- ISOCHRONE
 CREATE TABLE isochrone (
-    isochrone_id SERIAL PRIMARY KEY,
+    isochrone_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     request_id INT NOT NULL REFERENCES map_request(request_id) ON DELETE CASCADE,
     ev_id INT NOT NULL REFERENCES ev(ev_id),
     range_meters INT NOT NULL,

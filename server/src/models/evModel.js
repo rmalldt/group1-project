@@ -1,7 +1,7 @@
 const db = require('../db/connect');
 
 class Ev {
-  constructor(
+  constructor({
     ev_id,
     brand,
     model,
@@ -13,8 +13,8 @@ class Ev {
     rapid_charge,
     powertrain,
     plug_type,
-    ev_car_image
-  ) {
+    ev_car_image,
+  }) {
     this.ev_id = ev_id;
     this.brand = brand;
     this.model = model;
@@ -40,10 +40,24 @@ class Ev {
     return { data, message: null };
   }
 
-  static async getEvByModel(evModel) {
+  static async getAllByBrand(brand) {
     const response = await db.query(
-      'SELECT * FROM ev WHERE LOWER(model) = LOWER($1);',
-      [evModel]
+      `SELECT * FROM ev WHERE LOWER(brand) = LOWER($1);`,
+      [brand]
+    );
+
+    if (response.rows.length == 0) {
+      return { data: null, message: 'EV not found' };
+    }
+
+    const data = response.rows.map(ev => new Ev(ev));
+    return { data, message: null };
+  }
+
+  static async getEvByModel(model) {
+    const response = await db.query(
+      `SELECT * FROM ev WHERE LOWER(model) = LOWER($1);`,
+      [model]
     );
 
     if (response.rows.length != 1) {
