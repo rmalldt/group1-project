@@ -70,7 +70,7 @@ jobs:
           push: true
           tags: |
             ${{ vars.DOCKER_USERNAME}}/rangeiq-api:${{ steps.vars.outputs.sha_short }}
-            ${{ vars.DOCKER_USERNAME }}/rangeiq-mvc:latest
+            ${{ vars.DOCKER_USERNAME }}/rangeiq-api:latest
           build-args: |
             DB_HOST=${{ vars.DB_HOST }}
             DB_NAME=${{ vars.DB_NAME }}
