@@ -12,7 +12,7 @@ const params = document.getElementById('params');
 
 const lon = -0.021249;
 const lat = 51.545141; //these will be replaced with the user's location
-let minutes = 10; // Set the default duration
+let meters = 1000; // Set the default duration
 
 const marker = new mapboxgl.Marker({
     color: '#314ccd'
@@ -28,7 +28,7 @@ const marker = new mapboxgl.Marker({
   // Create a function that sets up the Isochrone API query then makes an fetch call
 async function getIso() {
     const query = await fetch(
-      `https://api.mapbox.com/isochrone/v1/mapbox/driving/${lon},${lat}?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`,
+      `https://api.mapbox.com/isochrone/v1/mapbox/driving/${lon},${lat}?contours_meters=${meters}&polygons=true&access_token=${mapboxgl.accessToken}`,
       { method: 'GET' }
     );
     const data = await query.json();
@@ -40,8 +40,8 @@ async function getIso() {
  params.addEventListener('change', (event) => {
     if (event.target.name === 'profile') {
       profile = event.target.value;
-    } else if (event.target.name === 'duration') {
-      minutes = event.target.value;
+    } else if (event.target.name === 'distance') {
+      meters = event.target.value;
     }
     getIso();
   });
