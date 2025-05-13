@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/signup.css">
+    <link rel="stylesheet" href="./styles/signup.css">
+    <script src="./scripts/signup.js" defer></script>
     <title>Sign Up</title>
 </head>
 <body>
 
+
     <div class="wrapper">
+
+      <button onclick="history.back()" aria-label="Go back">← Back</button>
+
     <h1>Create Account</h1>
       <p id="error-message"></p>
 
@@ -25,6 +30,13 @@
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg>
           </label>
           <input type="text" name="name" id="name-input" placeholder="Last Name">
+        </div>
+
+        <div>
+          <label for="postcode-input">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z"/></svg>
+          </label>
+          <input type="text" name="postcode" id="postcode-input" placeholder="Postcode" required>
         </div>
 
         <div>
@@ -46,8 +58,8 @@
         <label for="status">Status</label>
         <select name="status" id="status" required>
             <option value="">Select your status</option>
-            <option value="new-ev-driver">New EV Driver</option>
-            <option value="existing-ev-driver">Existing EV Driver</option>
+            <option value="new-ev-driver">Single?</option>
+            <option value="existing-ev-driver">Existing EV Driver?</option>
         </select>
 
 
@@ -87,6 +99,5 @@
             </form>          
             <p>Already registered? <a href="./login.html">Sign in here</a>.</p>
         </main> -->
-    <script src="../scripts/signup.js"></script>
 </body>
 </html>
