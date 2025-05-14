@@ -15,27 +15,48 @@ document.addEventListener('DOMContentLoaded', function () {
   // I think we need to add an async function here that makes a read request to the database
   // to get the car stats for the car the user selected, and destructures the object to make
   // the variables below dynamic. The request would be made to the '/model/:model' endpoint
-  // using the user inpput from the previous page.
+  // using the user input from the previous page.
+
+  let userSelectedModel = localStorage.getItem('carModel');
+
+  async function getVehicleStats(carmodel) {
+    try {
+      const response = await fetch(`http://localhost:3000/ev/model/${carmodel}`);
+      const data = await response.json();
+      const { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight } = data;
+      return { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight };
+    } catch (error) {
+      console.error('Error fetching vehicle stats:', error);
+      return {};
+    }
+  }
 
   map.events.add('ready', () => {
     // 2. Create a DataSource and add it to the map
     const dataSource = new atlas.source.DataSource();
     map.sources.add(dataSource);
 
-    // 3. Define isochrone parameters
+    // isochrone parameters
     const originLat = 51.586;
     const originLon = -0.478;
-    const carRange = 400000; // 400km range 
+    let carRange = 400000; // 400km range 
 
     // All of these will be dynamically populated with information 
     // from the database, related to the specific car the user picks
-    let carTopSpeed = 130; // 130 km/h
+   // let carTopSpeed = 0; // 130 km/h
     let batteryCapacity = 75; // 75 kWh
     let batteryCharge = 70
     let batteryEfficiency = 0.2; // 0.2 kWh/km
     let vehicleWeight = 1760
 
-    
+    let carStats = getVehicleStats(userSelectedModel);
+    carStats.then(stats => {
+       const { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight } = stats;
+
+       console.log('Car Stats:', { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight });
+     });
+
+
     // // 4. Build the Isochrone API URL using the subscription key
     const isoUrl =
       `https://atlas.microsoft.com/route/range/json` +
@@ -43,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
       `&query=${originLat},${originLon}` +
       `&distanceBudgetInMeters=${carRange}` +
       `&subscription-key=${subscriptionKey}` +
-      `&vehicleMaxSpeed=${carTopSpeed}`+
+      `&vehicleMaxSpeed=${carTopSpeed}` +
       `&vehicleWeight=${vehicleWeight}`
 
 
