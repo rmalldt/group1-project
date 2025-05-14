@@ -1,7 +1,7 @@
-const User = require('../models/userModels');
-const db = require('../db/connect');
+const User = require('../../../models/userModels');
+const db = require('../../../db/connect');
 
-jest.mock('../db/connect'); // Mock the DB
+jest.mock('../../../db/connect'); // Mock the DB
 
 describe('User Model', () => {
   afterEach(() => {

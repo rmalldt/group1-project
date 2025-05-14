@@ -1,7 +1,7 @@
-const User = require('../models/userModels');
-const userController = require('../controllers/userController');
+const User = require('../../../models/userModels');
+const userController = require('../../../controllers/userController');
 
-jest.mock('../models/userModels');
+jest.mock('../../../models/userModels');
 
 describe('User Controller', () => {
   let req, res;
@@ -96,13 +96,11 @@ describe('User Controller', () => {
       req.body = { username: 'updated', start_location: 'new location' };
 
       const mockUser = {
-        update: jest
-          .fn()
-          .mockResolvedValue({
-            id: 5,
-            username: 'updated',
-            start_location: 'new location',
-          }),
+        update: jest.fn().mockResolvedValue({
+          id: 5,
+          username: 'updated',
+          start_location: 'new location',
+        }),
       };
 
       User.getOneById.mockResolvedValue(mockUser);
