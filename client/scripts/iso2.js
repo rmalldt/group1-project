@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 1. Initialize the map
   const map = new atlas.Map('myMap', {
-    center: [-73.97, 40.78],
+    center: [-0.478, 51.586],
     zoom: 11,
     authOptions: {
       authType: 'subscriptionKey',
@@ -20,14 +20,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Define isochrone parameters
     const originLat = 51.586;
     const originLon = -0.478;
-    const timeBudgetSec = 200 * 60; // 15 minutes
+    const distanceBudgetM = 400000; // 400km range 
 
     // 4. Build the Isochrone API URL using the subscription key
     const isoUrl =
       `https://atlas.microsoft.com/route/range/json` +
       `?api-version=1.0` +
       `&query=${originLat},${originLon}` +
-      `&timeBudgetInSec=${timeBudgetSec}` +
+      `&distanceBudgetInMeters=${distanceBudgetM}` +
       `&subscription-key=${subscriptionKey}`;
 
     // 5. Fetch the isochrone and render it
