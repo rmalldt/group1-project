@@ -6,3 +6,4 @@ client/.parcel-cache
 server/.dockerignore
 .DS_Store
 .vscode
+client/scripts/config.js
