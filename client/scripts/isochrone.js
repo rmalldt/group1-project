@@ -13,7 +13,8 @@ let carmodel = 'Tesla3'
 
 const lon = -0.021249;
 const lat = 51.545141; //these will be replaced with the user's location
-let range = 448000; // Set the default duration
+let basicRange = 448000; 
+let range = basicRange; 
 
 const marker = new mapboxgl.Marker({
     color: '#314ccd'
@@ -41,7 +42,7 @@ async function getIso() {
     if (event.target.name === 'weather') {
       range = event.target.value;
     } else if (event.target.name === 'passengers') {
-      range = event.target.value;
+      range = range * parseFloat(event.target.value);
     }
     getIso();
   });
