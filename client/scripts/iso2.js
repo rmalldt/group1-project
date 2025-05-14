@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // I think we need to add an async function here that makes a read request to the database
+  // to get the car stats for the car the user selected, and destructures the object to make
+  // the variables below dynamic. The request would be made to the '/model/:model' endpoint
+  // using the user inpput from the previous page.
+
   map.events.add('ready', () => {
     // 2. Create a DataSource and add it to the map
     const dataSource = new atlas.source.DataSource();
@@ -20,36 +25,42 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Define isochrone parameters
     const originLat = 51.586;
     const originLon = -0.478;
-    const distanceBudgetM = 400000; // 400km range 
+    const carRange = 400000; // 400km range 
 
-    // All of these will be dynamically populated with information from the database, related to the specific car the user picks
-    let startLat = 51.586;
-    let startLon = -0.478;
-    let carRange = 400000; // 400km range 
+    // All of these will be dynamically populated with information 
+    // from the database, related to the specific car the user picks
     let carTopSpeed = 130; // 130 km/h
     let batteryCapacity = 75; // 75 kWh
+    let batteryCharge = 70
     let batteryEfficiency = 0.2; // 0.2 kWh/km
     let vehicleWeight = 1760
 
     
     // // 4. Build the Isochrone API URL using the subscription key
-    // const isoUrl =
-    //   `https://atlas.microsoft.com/route/range/json` +
-    //   `?api-version=1.0` +
-    //   `&query=${originLat},${originLon}` +
-    //   `&distanceBudgetInMeters=${distanceBudgetM}` +
-    //   `&subscription-key=${subscriptionKey}`;
+    const isoUrl =
+      `https://atlas.microsoft.com/route/range/json` +
+      `?api-version=1.0` +
+      `&query=${originLat},${originLon}` +
+      `&distanceBudgetInMeters=${carRange}` +
+      `&subscription-key=${subscriptionKey}` +
+      `&vehicleMaxSpeed=${carTopSpeed}`+
+      `&vehicleWeight=${vehicleWeight}`
 
-    const isoUrl2 = [
-  `https://atlas.microsoft.com/route/range/json?api-version=1.0`,
-  `&query=${originLat},${originLon}`,
-  `&distanceBudgetInMeters=${distanceBudgetM}`,
-  `&subscription-key=${subscriptionKey}`
-].join('');
+
+//     const isoUrl2 = [
+//   `https://atlas.microsoft.com/route/range/json?api-version=1.0`,
+//   `&query=${originLat},${originLon}`,
+//   `&distanceBudgetInMeters=${carRange}`,
+//   `&subscription-key=${subscriptionKey}`
+// //  `maxChargeInKWh=${batteryCapacity}`,
+// //  `currentChargeInKWh=${batteryCapacity}`,
+// // `vehicleMaxSpeed=${{carTopSpeed}}`,
+// //   `vehicleWeight=${vehicleWeight}`
+// ].join('');
 
 
     // 5. Fetch the isochrone and render it
-    fetch(isoUrl2)
+    fetch(isoUrl)
       .then(response => response.json())
       .then(result => {
         // Convert boundary points to [lon, lat] pairs
