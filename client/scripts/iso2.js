@@ -22,6 +22,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const originLon = -0.478;
     const distanceBudgetM = 400000; // 400km range 
 
+
+    const startLat = 51.586;
+    const startLon = -0.478;
+    const carRange = 400000; // 400km range 
+    const carTopSpeed = 130; // 130 km/h
+    const batteryCapacity = 75; // 75 kWh
+    const batteryEfficiency = 0.2; // 0.2 kWh/km
+
+
     // 4. Build the Isochrone API URL using the subscription key
     const isoUrl =
       `https://atlas.microsoft.com/route/range/json` +
@@ -29,6 +38,19 @@ document.addEventListener('DOMContentLoaded', function () {
       `&query=${originLat},${originLon}` +
       `&distanceBudgetInMeters=${distanceBudgetM}` +
       `&subscription-key=${subscriptionKey}`;
+
+    const isoUrl2 =
+      `https://atlas.microsoft.com/route/range/json` +
+      `?api-version=1.0` +
+      `&query=${originLat},${originLon}` +
+      `&distanceBudgetInMeters=${distanceBudgetM}` +
+      `&subscription-key=${subscriptionKey}` +
+      `&rangeType=isochrones` +
+      `&travelMode=car` +
+      `&maxAlternatives=1` +
+      `&computeBestOrder=false` +
+      `&attributes=area,polygon,reachability` +
+      `&timeBudgetInSeconds=3600`;
 
     // 5. Fetch the isochrone and render it
     fetch(isoUrl)
