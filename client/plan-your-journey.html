@@ -10,11 +10,16 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
     
-    <!-- Azure Maps Web SDK stylesheet -->
-    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" type="text/css" />
-    
-    <!-- Azure Maps Web SDK -->
+    <!-- Azure Maps CSS -->
+    <link 
+        rel="stylesheet" 
+        href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" 
+        type="text/css" 
+    />
+
+    <!-- Azure Maps JS -->
     <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+
 
     
 
@@ -86,7 +91,8 @@
             </div>
 
             <!-- Azure Map -->
-            <div id="myMap" class="w-100 border" style="height: 300px;"></div>
+            <div id="myMap" style="height: 300px; width: 100%;" class="mb-3 border"></div>
+
 
 
 
@@ -96,24 +102,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- js to load the map -->
-    <script>
-        // This key is already stored safely in the backend; use placeholder here for frontend map only
-        const subscriptionKey = "<YOUR_SUBSCRIPTION_KEY>"; // just a dummy string for now
+    <script src="./scripts/iso2.js"></script>
 
-        const map = new atlas.Map("myMap", {
-            center: [-0.1276, 51.5074], // Example: London
-            zoom: 10,
-            view: 'Auto',
-            authOptions: {
-                authType: 'subscriptionKey',
-                subscriptionKey: subscriptionKey
-            }
-        });
-
-        map.events.add('ready', function () {
-            console.log("Map loaded successfully");
-        });
-    </script>
 
 </body>
 
