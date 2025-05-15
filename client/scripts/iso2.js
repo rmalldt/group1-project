@@ -45,16 +45,24 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Azure Maps subscription key
   const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
 
-  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database, and can be dynamically changed by the user in the frontend (tied to an event listener)
+  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database, and can be dynamically changed by the user in the frontend (tied to the below event listener)
 
   const coords = await postCodeToLatLng(postcode);
-  const originLat = coords.latitude;
-  const originLon = coords.longitude;
+  let originLat = coords.latitude;
+  let originLon = coords.longitude;
   //const originLon = await postCodeToLatLng(postcode);
   console.log('Origin coordinates:', originLat, originLon);
 
 
-  // 1. Initialize the map
+  document.addEventListener('submit', async (event) => {
+      let postcode = document.getElementById('postcode').value;
+      let newCoords = await postCodeToLatLng(postcode);
+      originLat = newCoords.latitude;
+      originLon = newCoords.longitude
+  })
+
+
+  // Initialise the map
   const map = new atlas.Map('myMap', {
     center: [originLon, originLat],
     zoom: 5,
@@ -105,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     console.log('Isochrone URL to pass to Azure API:', isoUrl);
 
-    fetch(isoUrl)
+    fetch(isoUrl2)
       .then(response => response.json())
       .then(result => {
         // Convert boundary points to [lon, lat] pairs
