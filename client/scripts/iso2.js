@@ -1,3 +1,15 @@
+async function getVehicleStats(carmodel) {
+    try {
+      const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
+      const data = await response.json();
+      console.log('Vehicle stats from database:', data.data);
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching vehicle stats:', error);
+      return {};
+    }
+  }
+
 document.addEventListener('DOMContentLoaded', function () {
   // Azure Maps subscription key
   const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
@@ -5,87 +17,64 @@ document.addEventListener('DOMContentLoaded', function () {
   // 1. Initialize the map
   const map = new atlas.Map('myMap', {
     center: [-0.478, 51.586],
-    zoom: 11,
+    zoom: 5,
     authOptions: {
       authType: 'subscriptionKey',
       subscriptionKey: subscriptionKey
     }
   });
 
-  // I think we need to add an async function here that makes a read request to the database
-  // to get the car stats for the car the user selected, and destructures the object to make
-  // the variables below dynamic. The request would be made to the '/model/:model' endpoint
-  // using the user input from the previous page.
+  const originLat = 51.586;
+  const originLon = -0.478;
 
   let userSelectedModel = localStorage.getItem('carModel');
+  console.log('User selected model:', userSelectedModel);
 
-  async function getVehicleStats(carmodel) {
-    try {
-      const response = await fetch(`http://localhost:3000/ev/model/${carmodel}`);
-      const data = await response.json();
-      const { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight } = data;
-      return { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight };
-    } catch (error) {
-      console.error('Error fetching vehicle stats:', error);
-      return {};
-    }
-  }
-
-  map.events.add('ready', () => {
-    // 2. Create a DataSource and add it to the map
+  map.events.add('ready', async () => {
     const dataSource = new atlas.source.DataSource();
     map.sources.add(dataSource);
+  
+    const {
+      battery_capacity_kwh,
+      brand,
+      combined_wltp_range_km,
+      efficiency_kmkwh,
+      ev_car_image,
+      ev_id,
+      fast_charge_kmh,
+      model,
+      plug_type,
+      powertrain,
+      rapid_charge,
+      top_speed_kmh,
+      } = await getVehicleStats(userSelectedModel);
 
-    // isochrone parameters
-    const originLat = 51.586;
-    const originLon = -0.478;
-    let carRange = 400000; // 400km range 
-
-    // All of these will be dynamically populated with information 
-    // from the database, related to the specific car the user picks
-   // let carTopSpeed = 0; // 130 km/h
-    let batteryCapacity = 75; // 75 kWh
-    let batteryCharge = 70
-    let batteryEfficiency = 0.2; // 0.2 kWh/km
-    let vehicleWeight = 1760
-
-    let carStats = getVehicleStats(userSelectedModel);
-    carStats.then(stats => {
-       const { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight } = stats;
-
-       console.log('Car Stats:', { carTopSpeed, batteryCapacity, batteryCharge, batteryEfficiency, vehicleWeight });
-     });
-
-
-    // // 4. Build the Isochrone API URL using the subscription key
+      // We will need an event listener here to recieve environmental variables (weather conditions,
+      // passenger number, etc.) from the user on the map, and use that information to mutate the range, or 
+      // possibly even the vehicle weight.
+    
     const isoUrl =
       `https://atlas.microsoft.com/route/range/json` +
       `?api-version=1.0` +
       `&query=${originLat},${originLon}` +
-      `&distanceBudgetInMeters=${carRange}` +
+      `&distanceBudgetInMeters=${combined_wltp_range_km * 1000}` + // under WLTP ideal conditions
       `&subscription-key=${subscriptionKey}` +
-      `&vehicleMaxSpeed=${carTopSpeed}` +
-      `&vehicleWeight=${vehicleWeight}`
+      `&vehicleMaxSpeed=${top_speed_kmh}` +
+      `&traffic=true`
 
+    console.log('Isochrone URL to pass to Azure API:', isoUrl);
 
-//     const isoUrl2 = [
-//   `https://atlas.microsoft.com/route/range/json?api-version=1.0`,
-//   `&query=${originLat},${originLon}`,
-//   `&distanceBudgetInMeters=${carRange}`,
-//   `&subscription-key=${subscriptionKey}`
-// //  `maxChargeInKWh=${batteryCapacity}`,
-// //  `currentChargeInKWh=${batteryCapacity}`,
-// // `vehicleMaxSpeed=${{carTopSpeed}}`,
-// //   `vehicleWeight=${vehicleWeight}`
-// ].join('');
-
-
-    // 5. Fetch the isochrone and render it
     fetch(isoUrl)
       .then(response => response.json())
       .then(result => {
         // Convert boundary points to [lon, lat] pairs
         const boundaryCoords = result.reachableRange.boundary.map(pt => [pt.longitude, pt.latitude]);
+        console.log('Boundary coordinates:', boundaryCoords);
+
+        // Ideally we would find a way to double the number of points in the boundary to make the polygon
+        // smoother, which we would need to do after the fetch(isoUrl) call. Can we write a function that
+        // takes the mean between each set of two points and add them as elements to the boundaryCoords array?
+
 
         // Create a GeoJSON Polygon from the boundary
         const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
@@ -104,5 +93,5 @@ document.addEventListener('DOMContentLoaded', function () {
         map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
       })
       .catch(console.error);
+    });
   });
-});
