@@ -1,0 +1,37 @@
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: #f8f9fa;
+}
+
+h2 {
+    color: #005477;
+}
+
+.btn-dark {
+    background-color: #007B8B;
+    border: none;
+}
+
+.btn-dark:hover {
+    background-color: #005477;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.logo-img {
+    width: 100px;
+    height: auto;
+}
+
+.placeholder-car {
+    max-height: 200px;
+    object-fit: contain;
+}

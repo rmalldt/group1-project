@@ -1,0 +1,36 @@
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h2 {
+            color: #005477;
+            text-transform: uppercase;
+        }
+
+        .btn-dark {
+            background-color: #64b4f6;
+            color: #2E2B41;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-dark:hover {
+            background-color: #005477;
+        }
+
+        .btn-outline-dark {
+            border-color: #007B8B;
+            color: #007B8B;
+            border-radius: 10px;
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #007B8B;
+            color: #fff;
+        }
+
+        .map-placeholder {
+            background-color: #e9ecef;
+            height: 200px;
+        }
