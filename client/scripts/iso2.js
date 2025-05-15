@@ -10,13 +10,53 @@ async function getVehicleStats(carmodel) {
     }
   }
 
-document.addEventListener('DOMContentLoaded', function () {
+
+async function postCodeToLatLng(postcode) {
+  let latlng;
+  try {
+    let response = await fetch(
+      `https://api.postcodes.io/postcodes/${postcode}`
+    );
+    let resData = await response.json();
+    latlng = {latitude: resData.result.latitude, longitude: resData.result.longitude}
+    console.log(latlng);
+    return latlng;
+  } catch (error) {
+    console.log('Invalid postcode');
+  }
+}
+
+
+// async function getUserPostcode(userId) {
+//   try {
+//     const response = await fetch(`http://localhost:3000/users/model/${userId}`);
+//       const resData = await response.json();
+//       const postcode = resData.data.start_location;
+//       console.log('Vehicle stats from database:', postcode);
+//       return postcode;
+//   } catch (error) {
+//     console.log('Invalid postcode');
+//   }
+// }
+
+
+
+document.addEventListener('DOMContentLoaded', async function () {
   // Azure Maps subscription key
   const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
 
+  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database, and can be dynamically changed by the user in the frontend (tied to an event listener)
+
+  const coords = await postCodeToLatLng(postcode);
+  const originLat = coords.latitude;
+  const originLon = coords.longitude;
+  //const originLon = await postCodeToLatLng(postcode);
+  console.log('Origin coordinates:', originLat, originLon);
+
+
   // 1. Initialize the map
   const map = new atlas.Map('myMap', {
-    center: [-0.478, 51.586],
+    center: [originLon, originLat],
     zoom: 5,
     authOptions: {
       authType: 'subscriptionKey',
@@ -24,8 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  const originLat = 51.586;
-  const originLon = -0.478;
+
 
   let userSelectedModel = localStorage.getItem('carModel');
   console.log('User selected model:', userSelectedModel);
@@ -52,12 +91,14 @@ document.addEventListener('DOMContentLoaded', function () {
       // We will need an event listener here to recieve environmental variables (weather conditions,
       // passenger number, etc.) from the user on the map, and use that information to mutate the range, or 
       // possibly even the vehicle weight.
+
+    let batteryCharge = 0.5; // 50% charge
     
     const isoUrl =
       `https://atlas.microsoft.com/route/range/json` +
       `?api-version=1.0` +
       `&query=${originLat},${originLon}` +
-      `&distanceBudgetInMeters=${combined_wltp_range_km * 1000}` + // under WLTP ideal conditions
+      `&distanceBudgetInMeters=${(combined_wltp_range_km * 1000) * batteryCharge}` + // under WLTP ideal conditions
       `&subscription-key=${subscriptionKey}` +
       `&vehicleMaxSpeed=${top_speed_kmh}` +
       `&traffic=true`
@@ -94,4 +135,10 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch(console.error);
     });
+
+    
+
   });
+
+  
+
