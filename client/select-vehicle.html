@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="./styles/select-vehicle.css" />
+    <!-- <link rel="stylesheet" href="./styles/signin.css"> -->
+
 
     <style>
         body {
@@ -34,6 +36,18 @@
         .form-label {
             font-weight: 500;
         }
+
+        .logo {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+        }
+
+        .logo-img {
+        width: 100px;
+        height: auto;
+        }
+
     </style>
 
     <script src="./scripts/select-vehicle.js" defer></script>
@@ -41,7 +55,14 @@
 
 <body>
     <main class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+
+        
         <div class="w-100" style="max-width: 400px;">
+            <div class="logo">
+                <!-- SVG or image for the logo -->
+                <img src="./assets/logo/logo_vector.svg" class="logo-img" alt="logo-image">
+            </div>
+
             <a href="#" onclick="history.back()" class="mb-3 d-block text-decoration-none text-primary">&larr; Back</a>
 
             <h2 class="text-center mb-4">Select Vehicle</h2>
@@ -89,58 +110,3 @@
 
 
 
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="styles" href="./styles/select-vehicle.css">
-    <script src="./scripts/select-vehicle.js" defer></script>
-    <title>Select Vehicle</title>
-</head>
-<body>
-
-    <main class="wrapper">
-
-                <header> 
-                    <button onclick="history.back()" aria-label="Go back">← Back</button>
-                    <h1>Select Your Vehicle</h1>
-                    <p>Please choose the electric vehicle you'd like to explore.</p>
-                </header>
-
-                <section class="vehicle-select">
-                    <label for="vehicle-dropdown">Vehicle</label>
-
-                    <select id="vehicle-dropdown" name="vehicle" required>
-                    <option value="">-- Select your EV model --</option>
-                    <option value="tesla-model-3">Tesla Model 3</option>
-                    <option value="nissan-leaf">Nissan Leaf</option>
-                    <option value="kia-ev6">Kia EV6</option>
-                    <option value="hyundai-ioniq5">Hyundai Ioniq 5</option>
-                    </select>
-                </section>
-
-                <section class="vehicle-info">
-                    <figure> 
-                    <img src="images/car-placeholder.jpg" alt="Selected vehicle image" id="vehicle-img">
-                    <figcaption>Image of selected EV</figcaption>
-                    </figure>
-
-                    <div class="details">
-                    <p><strong>Manufacturer:</strong> <span id="vehicle-make">-</span></p>
-                    <p><strong>Range:</strong> <span id="vehicle-range">-</span> km</p>
-                    </div>
-                </section>
-
-                <footer>
-                    <button type="button" onclick="window.location.href='plan-your-journey.html'">Continue</button>
-                </footer>
-
-</main>
-
-</body>
-</html> -->
