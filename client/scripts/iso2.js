@@ -159,8 +159,6 @@ async function fetchIsochrone(
       const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
 
       dataSource.clear();
-      map.layers.layerIndex.pop();
-      // Add it to the DataSource
       dataSource.add(isochronePolygon);
 
       // Add a PolygonLayer to style the fill and outline
