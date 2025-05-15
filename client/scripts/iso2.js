@@ -40,6 +40,11 @@ async function postCodeToLatLng(postcode) {
 //   }
 // }
 
+// Global map object
+let map;
+let dataSource;
+let polygonLayer;
+
 document.addEventListener('DOMContentLoaded', async function () {
   // Azure Maps subscription key
   const subscriptionKey =
@@ -55,6 +60,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   let button = document.getElementById('postcode');
 
+  let userSelectedModel = localStorage.getItem('carModel');
+  console.log('User selected model:', userSelectedModel);
+
   button.addEventListener('click', async event => {
     let postcode = document.getElementById('postcode-input').value;
     console.log('POSTCODE: ', postcode);
@@ -62,10 +70,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log('COORDS: ', newCoords);
     originLat = newCoords.latitude;
     originLon = newCoords.longitude;
+
+    await fetchIsochrone(
+      userSelectedModel,
+      originLat,
+      originLon,
+      subscriptionKey
+    );
   });
 
   // Initialise the map
-  const map = new atlas.Map('myMap', {
+  map = new atlas.Map('myMap', {
     center: [originLon, originLat],
     zoom: 5,
     authOptions: {
@@ -74,79 +89,85 @@ document.addEventListener('DOMContentLoaded', async function () {
     },
   });
 
-  let userSelectedModel = localStorage.getItem('carModel');
-  console.log('User selected model:', userSelectedModel);
-
   map.events.add('ready', async () => {
-    const dataSource = new atlas.source.DataSource();
+    dataSource = new atlas.source.DataSource();
     map.sources.add(dataSource);
 
-    const {
-      battery_capacity_kwh,
-      brand,
-      combined_wltp_range_km,
-      efficiency_kmkwh,
-      ev_car_image,
-      ev_id,
-      fast_charge_kmh,
-      model,
-      plug_type,
-      powertrain,
-      rapid_charge,
-      top_speed_kmh,
-    } = await getVehicleStats(userSelectedModel);
+    polygonLayer = new atlas.layer.PolygonLayer(dataSource, null, {
+      fillColor: 'rgb(0, 136, 255)',
+      strokeColor: 'blue',
+      strokeWidth: 2,
+    });
 
-    // We will need an event listener here to recieve environmental variables (weather conditions,
-    // passenger number, etc.) from the user on the map, and use that information to mutate the range, or
-    // possibly even the vehicle weight.
-
-    let batteryCharge = 0.5; // 50% charge
-
-    const isoUrl =
-      `https://atlas.microsoft.com/route/range/json` +
-      `?api-version=1.0` +
-      `&query=${originLat},${originLon}` +
-      `&distanceBudgetInMeters=${
-        combined_wltp_range_km * 1000 * batteryCharge
-      }` + // under WLTP ideal conditions
-      `&subscription-key=${subscriptionKey}` +
-      `&vehicleMaxSpeed=${top_speed_kmh}` +
-      `&traffic=true`;
-
-    console.log('Isochrone URL to pass to Azure API:', isoUrl);
-
-    fetch(isoUrl)
-      .then(response => response.json())
-      .then(result => {
-        // Convert boundary points to [lon, lat] pairs
-        const boundaryCoords = result.reachableRange.boundary.map(pt => [
-          pt.longitude,
-          pt.latitude,
-        ]);
-        console.log('Boundary coordinates:', boundaryCoords);
-
-        // Ideally we would find a way to double the number of points in the boundary to make the polygon
-        // smoother, which we would need to do after the fetch(isoUrl) call. Can we write a function that
-        // takes the mean between each set of two points and add them as elements to the boundaryCoords array?
-
-        // Create a GeoJSON Polygon from the boundary
-        const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
-
-        // Add it to the DataSource
-        dataSource.add(isochronePolygon);
-
-        // Add a PolygonLayer to style the fill and outline
-        map.layers.add(
-          new atlas.layer.PolygonLayer(dataSource, null, {
-            fillColor: 'rgb(255, 0, 0)',
-            strokeColor: 'blue',
-            strokeWidth: 2,
-          })
-        );
-
-        // Zoom the map to the polygon bounds
-        map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
-      })
-      .catch(console.error);
+    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey);
   });
 });
+
+async function fetchIsochrone(
+  userSelectedModel,
+  originLat,
+  originLon,
+  subscriptionKey
+) {
+  const {
+    battery_capacity_kwh,
+    brand,
+    combined_wltp_range_km,
+    efficiency_kmkwh,
+    ev_car_image,
+    ev_id,
+    fast_charge_kmh,
+    model,
+    plug_type,
+    powertrain,
+    rapid_charge,
+    top_speed_kmh,
+  } = await getVehicleStats(userSelectedModel);
+
+  // We will need an event listener here to recieve environmental variables (weather conditions,
+  // passenger number, etc.) from the user on the map, and use that information to mutate the range, or
+  // possibly even the vehicle weight.
+
+  let batteryCharge = 0.5; // 50% charge
+
+  const isoUrl =
+    `https://atlas.microsoft.com/route/range/json` +
+    `?api-version=1.0` +
+    `&query=${originLat},${originLon}` +
+    `&distanceBudgetInMeters=${combined_wltp_range_km * 1000 * batteryCharge}` + // under WLTP ideal conditions
+    `&subscription-key=${subscriptionKey}` +
+    `&vehicleMaxSpeed=${top_speed_kmh}` +
+    `&traffic=true`;
+
+  console.log('Isochrone URL to pass to Azure API:', isoUrl);
+
+  fetch(isoUrl)
+    .then(response => response.json())
+    .then(result => {
+      // Convert boundary points to [lon, lat] pairs
+      const boundaryCoords = result.reachableRange.boundary.map(pt => [
+        pt.longitude,
+        pt.latitude,
+      ]);
+      console.log('Boundary coordinates:', boundaryCoords);
+
+      // Ideally we would find a way to double the number of points in the boundary to make the polygon
+      // smoother, which we would need to do after the fetch(isoUrl) call. Can we write a function that
+      // takes the mean between each set of two points and add them as elements to the boundaryCoords array?
+
+      // Create a GeoJSON Polygon from the boundary
+      const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
+
+      dataSource.clear();
+      map.layers.layerIndex.pop();
+      // Add it to the DataSource
+      dataSource.add(isochronePolygon);
+
+      // Add a PolygonLayer to style the fill and outline
+      map.layers.add(polygonLayer);
+
+      // Zoom the map to the polygon bounds
+      map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
+    })
+    .catch(console.error);
+}
