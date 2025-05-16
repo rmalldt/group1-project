@@ -89,3 +89,14 @@ h1 {
 #toggleDrawer:hover {
     background-color: var(--text-color);
 }
+
+
+#myMap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  /* keep it below the drawer and toggle button */
+}
