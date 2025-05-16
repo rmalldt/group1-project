@@ -1,7 +1,7 @@
 
 async function getVehicleStats(carmodel) {
   try {
-    const response = await fetch(`http://ec2-18-133-117-194.eu-west-2.compute.amazonaws.com:3000/evs/model/${carmodel}`);
+    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
     const data = await response.json();
     console.log('Vehicle stats from database:', data.data);
     return data.data;
@@ -11,9 +11,10 @@ async function getVehicleStats(carmodel) {
   }
 }
 
+
 async function getUserPostcode(userId) {
   try {
-    const response = await fetch(`http://ec2-18-133-117-194.eu-west-2.compute.amazonaws.com:3000/users/${userId}`);
+    const response = await fetch(`http://localhost:3000/users/${userId}`);
       const resData = await response.json();
       const postcode = resData.data.start_location;
       console.log('User postcode:', postcode);
@@ -35,8 +36,8 @@ async function postCodeToLatLng(postcode) {
       latitude: resData.result.latitude,
       longitude: resData.result.longitude,
     };
-    console.log(latlng);
-    return latlng;
+    console.log(resData.result);
+    return latlng
   } catch (error) {
     console.log('Invalid postcode');
   }
