@@ -51,7 +51,7 @@ h1 {
 
 /* Drawer */
 .drawer {
-    position: fixed; /* stay fixed when user scrolls */
+    position: fixed; 
     bottom: -100%;
     left: 0;
     width: 100%;
@@ -63,7 +63,7 @@ h1 {
     padding: 2rem 1.5rem;
 }
 
-.drawer.open {  /* when add class open will be positioned at the bottom of its containing element */
+.drawer.open { 
     bottom: 0;
 }
 
@@ -98,5 +98,5 @@ h1 {
   width: 100vw;
   height: 100vh;
   z-index: 1;
-  /* keep it below the drawer and toggle button */
+  
 }
