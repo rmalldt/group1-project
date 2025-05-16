@@ -1,3 +1,48 @@
+
+async function getVehicleStats(carmodel) {
+  try {
+    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
+    const data = await response.json();
+    console.log('Vehicle stats from database:', data.data);
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching vehicle stats:', error);
+    return {};
+  }
+}
+
+async function getUserPostcode(userId) {
+  try {
+    const response = await fetch(`http://localhost:3000/users/${userId}`);
+      const resData = await response.json();
+      const postcode = resData.data.start_location;
+      console.log('User postcode:', postcode);
+      return postcode;
+  } catch (error) {
+    console.log('Invalid postcode');
+  }
+}
+
+
+async function postCodeToLatLng(postcode) {
+  let latlng;
+  try {
+    let response = await fetch(
+      `https://api.postcodes.io/postcodes/${postcode}`
+    );
+    let resData = await response.json();
+    latlng = {
+      latitude: resData.result.latitude,
+      longitude: resData.result.longitude,
+    };
+    console.log(latlng);
+    return latlng;
+  } catch (error) {
+    console.log('Invalid postcode');
+  }
+}
+
+
 // Global map object
 let map;
 let dataSource;
@@ -67,51 +112,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 // ------------------
-
-async function getVehicleStats(carmodel) {
-  try {
-    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
-    const data = await response.json();
-    console.log('Vehicle stats from database:', data.data);
-    return data.data;
-  } catch (error) {
-    console.error('Error fetching vehicle stats:', error);
-    return {};
-  }
-}
-
-
-async function getUserPostcode(userId) {
-  try {
-    const response = await fetch(`http://localhost:3000/users/${userId}`);
-      const resData = await response.json();
-      const postcode = resData.data.start_location;
-      console.log('User postcode:', postcode);
-      return postcode;
-  } catch (error) {
-    console.log('Invalid postcode');
-  }
-}
-
-
-async function postCodeToLatLng(postcode) {
-  let latlng;
-  try {
-    let response = await fetch(
-      `https://api.postcodes.io/postcodes/${postcode}`
-    );
-    let resData = await response.json();
-    latlng = {
-      latitude: resData.result.latitude,
-      longitude: resData.result.longitude,
-    };
-    console.log(latlng);
-    return latlng;
-  } catch (error) {
-    console.log('Invalid postcode');
-  }
-}
-
 
 async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey) {
   const {

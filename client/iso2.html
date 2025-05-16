@@ -28,8 +28,13 @@
         height: 100%;
       }
     </style>
+  
+  </head>
+  <body>
+        <div id="drawer" class="drawer">
+    <form id="settingsForm">
 
-    <input
+      <input
       type="text"
       name="postcode"
       id="postcode-input"
@@ -37,12 +42,39 @@
       required
     />
     <button id="postcode">Submit Postcode</button>
-  </head>
-  <body>
+
+      <label>
+        Battery Capacity:
+        <select name="battery" id="battery">
+          <option value="100">100%</option>
+          <option value="75">75%</option>
+          <option value="50">50%</option>
+          <option value="25">25%</option>
+        </select>
+      </label>
+
+      <label>
+        Number of Passengers:
+        <input type="number" name="passengers" id="passengers" min="1" max="7" value="1" />
+      </label>
+
+      <label>
+        Weather:
+        <select name="weather" id="weather">
+          <option value="clear">Clear</option>
+          <option value="rain">Rain</option>
+          <option value="snow">Snow</option>
+          <option value="wind">Wind</option>
+        </select>
+      </label>
+
+      <button type="submit">Apply</button>
+    </form>
+  </div>
+
     <div id="myMap"></div>
 
     <!-- External script for isochrone logic -->
-    <script src="./scripts/config.js"></script>
     <script src="./scripts/iso2.js"></script>
   </body>
 </html>
