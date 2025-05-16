@@ -196,3 +196,10 @@ async function fetchIsochrone(userSelectedModel, originLat, originLon, subscript
     })
     .catch(console.error);
   }
+
+  const drawer = document.getElementById("drawer");
+const toggleBtn = document.getElementById("toggleDrawer");
+
+toggleBtn.addEventListener("click", () => {
+  drawer.classList.toggle("open");
+});
