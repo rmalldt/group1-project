@@ -49,8 +49,40 @@ let dataSource;
 let polygonLayer;
 
 document.addEventListener('DOMContentLoaded', async function () {
-  const subscriptionKey =
-    'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
+
+const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
+
+document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+ 
+  let postcode = document.getElementById('postcode-input').value.trim();
+  let batteryCharge = parseFloat(document.getElementById('battery').value);
+  let passengerDifferential = parseFloat(document.getElementById('passengers').value);
+  let weatherConditionDifferential = document.getElementById('weather').value;
+
+  console.log("Form Submitted:");
+  console.log("Postcode:", postcode);
+  console.log("Battery:", batteryCharge);
+  console.log("Passengers:", passengerDifferential);
+  console.log("Weather:", weatherConditionDifferential);
+
+  let newCoords = await postCodeToLatLng(postcode);
+    console.log('NEW COORDS: ', newCoords);
+    originLat = newCoords.latitude;
+    originLon = newCoords.longitude;
+ 
+  await fetchIsochrone(
+      userSelectedModel,
+      originLat,
+      originLon,
+      subscriptionKey,
+      batteryCharge,
+      weatherConditionDifferential,
+      passengerDifferential
+    );
+});
+
+
 
   let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
 
@@ -67,32 +99,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   console.log('Starting coordinates:', originLat, originLon);
 
   let userSelectedModel = localStorage.getItem('carModel');
-  console.log('User selected model:', userSelectedModel);
-
-// The below event listener needs to be changed, to listen for changes to the settingsForm form. Instead of 
-// just listening for a click on the 'new postcode' input button, it will need to record and send all information
-// from all of the inputs (battery, weather, passengers, and the new postcode) to this JS file, so that 
-// a) the isochrone API can be called with the new postcode, and b) the range can be recalculated based on the
-// weather/battery/passenger inputs.
-
-
-  let button = document.getElementById('postcode');
-
-  button.addEventListener('click', async event => {
-    let postcode = document.getElementById('postcode-input').value;
-    console.log('NEW POSTCODE: ', postcode);
-    let newCoords = await postCodeToLatLng(postcode);
-    console.log('NEW COORDS: ', newCoords);
-    originLat = newCoords.latitude;
-    originLon = newCoords.longitude;
-
-    await fetchIsochrone(
-      userSelectedModel,
-      originLat,
-      originLon,
-      subscriptionKey
-    );
-  });
+  console.log('User selected model:', userSelectedModel)
 
 
 // ------------------------
@@ -117,13 +124,16 @@ document.addEventListener('DOMContentLoaded', async function () {
       strokeWidth: 2,
     });
 
-    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey);
+    console.log('Map is ready');
+    console.log('User selected model:', userSelectedModel);
+
+    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge=1, weatherConditionDifferential=1, passengerDifferential=1);
   });
 });
 
 // ------------------
 
-async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey) {
+async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential) {
   const {
     battery_capacity_kwh,
     brand,
@@ -143,9 +153,9 @@ async function fetchIsochrone(userSelectedModel, originLat, originLon, subscript
   // passenger number, etc.) from the user on the map, and use that information to mutate the range, or
   // possibly even the vehicle weight.
 
-  let batteryCharge = 0.5; // 50% charge
-  let weatherConditionDifferential = 0.75; // 25% reduction in range due to weather
-  let passengerDifferential = 0.9; // 10% reduction in range due to passengers
+  // let weatherConditionDifferential = 1;
+  // let passengerDifferential = 1;
+  // let batteryCharge = 1;
 
   const isoUrl =
     `https://atlas.microsoft.com/route/range/json` +
