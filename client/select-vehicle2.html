@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Vehicle</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./styles/select-vehicle.css" />
+    <!-- <link rel="stylesheet" href="./styles/signin.css"> -->
+
+    <script src="./scripts/select-vehicle.js" defer></script>
+</head>
+
+<body>
+    <main class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+
+
+        <div class="w-100" style="max-width: 400px;">
+            <div class="logo">
+                <!-- SVG or image for the logo -->
+                <img src="./assets/logo/logo_vector.svg" class="logo-img" alt="logo-image">
+            </div>
+
+            <a href="./signin.html" class="mb-3 d-block text-decoration-none text-primary">&larr; Back</a>
+
+            <h2 class="text-center mb-4">Select Vehicle</h2>
+
+            <div class="mb-3">
+                <label for="make" class="form-label">Make</label>
+                <select id="make" class="form-select">
+                    <option value="">Select Make</option>
+                    <option value="tesla">Tesla</option>
+                    <option value="nissan">Nissan</option>
+                    <option value="kia">Kia</option>
+                    <option value="hyundai">Hyundai</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="model" class="form-label">Model</label>
+                <select id="model" class="form-select">
+                    <option value="">Select Model</option>
+                    <option value="tesla-model-3">Model 3</option>
+                    <option value="nissan-leaf">Leaf</option>
+                    <option value="kia-ev6">EV6</option>
+                    <option value="hyundai-ioniq5">Ioniq 5</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-center mb-3">
+                <img src="./assets/logo/car-placeholder.png" alt="Placeholder Car"
+                    class="img-fluid border placeholder-car" />
+
+            </div>
+
+            <p><strong>Range:</strong> 240 miles</p>
+            <p><strong>Manufacturer:</strong> XYZ Motors</p>
+
+            <button class="btn btn-dark w-100">Submit</button>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
