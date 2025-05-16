@@ -52,6 +52,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
 
+  const drawer = document.getElementById("drawer");
+const toggleBtn = document.getElementById("toggleDrawer");
+
+  toggleBtn.addEventListener("click", () => {
+  drawer.classList.toggle("open");
+});
+
 document.getElementById('settingsForm').addEventListener('submit', async (e) => {
   e.preventDefault();
  
@@ -197,9 +204,9 @@ async function fetchIsochrone(userSelectedModel, originLat, originLon, subscript
     .catch(console.error);
   }
 
-  const drawer = document.getElementById("drawer");
-const toggleBtn = document.getElementById("toggleDrawer");
+//   const drawer = document.getElementById("drawer");
+// const toggleBtn = document.getElementById("toggleDrawer");
 
-toggleBtn.addEventListener("click", () => {
-  drawer.classList.toggle("open");
-});
+// toggleBtn.addEventListener("click", () => {
+//   drawer.classList.toggle("open");
+// });
