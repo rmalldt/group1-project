@@ -3,6 +3,13 @@ coverage
 .env
 client/dist
 client/.parcel-cache
+docker-compose.yml
 server/.dockerignore
 .DS_Store
 .vscode
+
+# terraform
+.terraform
+*.terraform/lock/hcl
+*.tfstate
+*.tfstate.backup

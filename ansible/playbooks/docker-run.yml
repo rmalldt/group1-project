@@ -1,0 +1,14 @@
+- hosts: production
+  become: true
+  tasks:
+    - name: Navigate to directory containing docker-compose.yml
+      shell: cd rangeiq
+      args:
+        chdir: /home/ec2-user
+      become: true
+
+    - name: Run docker-compose
+      shell: docker-compose up -d
+      args:
+        chdir: /home/ec2-user/rangeiq
+      become: true
