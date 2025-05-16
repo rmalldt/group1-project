@@ -66,10 +66,17 @@ document.addEventListener('DOMContentLoaded', async function () {
   let originLon = coords.longitude;
   console.log('Starting coordinates:', originLat, originLon);
 
-  let button = document.getElementById('postcode');
-
   let userSelectedModel = localStorage.getItem('carModel');
   console.log('User selected model:', userSelectedModel);
+
+// The below event listener needs to be changed, to listen for changes to the settingsForm form. Instead of 
+// just listening for a click on the 'new postcode' input button, it will need to record and send all information
+// from all of the inputs (battery, weather, passengers, and the new postcode) to this JS file, so that 
+// a) the isochrone API can be called with the new postcode, and b) the range can be recalculated based on the
+// weather/battery/passenger inputs.
+
+
+  let button = document.getElementById('postcode');
 
   button.addEventListener('click', async event => {
     let postcode = document.getElementById('postcode-input').value;
@@ -86,6 +93,9 @@ document.addEventListener('DOMContentLoaded', async function () {
       subscriptionKey
     );
   });
+
+
+// ------------------------
 
   // Initialise the map
   map = new atlas.Map('myMap', {
@@ -134,12 +144,14 @@ async function fetchIsochrone(userSelectedModel, originLat, originLon, subscript
   // possibly even the vehicle weight.
 
   let batteryCharge = 0.5; // 50% charge
+  let weatherConditionDifferential = 0.75; // 25% reduction in range due to weather
+  let passengerDifferential = 0.9; // 10% reduction in range due to passengers
 
   const isoUrl =
     `https://atlas.microsoft.com/route/range/json` +
     `?api-version=1.0` +
     `&query=${originLat},${originLon}` +
-    `&distanceBudgetInMeters=${combined_wltp_range_km * 1000 * batteryCharge}` + // under WLTP ideal conditions
+    `&distanceBudgetInMeters=${combined_wltp_range_km * 1000 * batteryCharge * weatherConditionDifferential * passengerDifferential}` + // under WLTP ideal conditions
     `&subscription-key=${subscriptionKey}` +
     `&vehicleMaxSpeed=${top_speed_kmh}` +
     `&traffic=true`;
