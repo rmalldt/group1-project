@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  rangeiq-api:
+    image: rmall67/rangeiq-api-cloud:0.0.1.TEST
+    ports:
+      - '3000:3000'
+    restart: always
+    depends_on:
+      - rangeiq-db
+    networks:
+      - rangeiq-network
+
+  rangeiq-db:
+    image: rmall67/rangeiq-db-cloud:0.0.1.TEST
+    ports:
+      - '5432:5432'
+    restart: always
+    networks:
+      - rangeiq-network
+
+networks:
+  rangeiq-network:
