@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --accent-color: #64b4f6;
+    --base-color: white;
+    --text-color: #2E2B41;
+    --input-color: #F3F0FF;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-family: Fredoka, 'Segoe UI', sans-serif;
+    color: var(--text-color);
+    text-align: center;
+}
+
+body {
+    min-height: 100dvh;
+    font-weight: 300;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--base-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+
+@media (max-width: 500px) {
+    body {
+        padding: 0 1rem;
+    }
+}
+
+/* Drawer */
+.drawer {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--base-color);
+    border-top: 3px solid var(--accent-color);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+    transition: bottom 0.4s ease-in-out;
+    z-index: 999;
+    /* above everuthing */
+    padding: 2rem 1.5rem;
+}
+
+.drawer.open {
+    bottom: 0;
+}
+
+#toggleDrawer {
+    display: flex;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+    background-color: var(--accent-color);
+    color: var(--base-color);
+    padding: 0.25em 0.5em;
+    border: none;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 150ms ease;
+}
+
+
+#toggleDrawer:hover {
+    background-color: var(--text-color);
+}
+
+
+#myMap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+
+}
+
+#backButton {
+    display: flex;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    background-color: var(--accent-color);
+    color: var(--base-color);
+    padding: 0.25em 0.5em;
+    border: none;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 150ms ease;
+}
