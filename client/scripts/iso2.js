@@ -1,62 +1,25 @@
-async function getVehicleStats(carmodel) {
-  try {
-    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
-    const data = await response.json();
-    console.log('Vehicle stats from database:', data.data);
-    return data.data;
-  } catch (error) {
-    console.error('Error fetching vehicle stats:', error);
-    return {};
-  }
-}
-
-async function postCodeToLatLng(postcode) {
-  let latlng;
-  try {
-    let response = await fetch(
-      `https://api.postcodes.io/postcodes/${postcode}`
-    );
-    let resData = await response.json();
-    latlng = {
-      latitude: resData.result.latitude,
-      longitude: resData.result.longitude,
-    };
-    console.log(latlng);
-    return latlng;
-  } catch (error) {
-    console.log('Invalid postcode');
-  }
-}
-
-// async function getUserPostcode(userId) {
-//   try {
-//     const response = await fetch(`http://localhost:3000/users/model/${userId}`);
-//       const resData = await response.json();
-//       const postcode = resData.data.start_location;
-//       console.log('Vehicle stats from database:', postcode);
-//       return postcode;
-//   } catch (error) {
-//     console.log('Invalid postcode');
-//   }
-// }
-
 // Global map object
 let map;
 let dataSource;
 let polygonLayer;
 
 document.addEventListener('DOMContentLoaded', async function () {
-  // Azure Maps subscription key
   const subscriptionKey =
     'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
 
-  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database, and can be dynamically changed by the user in the frontend (tied to the below event listener)
+  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
+
+  // localStorage.setItem('userId', '1'); // This should be replaced with the user's ID from the database
+  //const userId = localStorage.getItem('userId');
+  // const coords = await postCodeToLatLng(getUserPostcode(userId).then(data => {
+  //   console.log('User postcode:', data);
+  //   return data;
+  // }));
 
   const coords = await postCodeToLatLng(postcode);
   let originLat = coords.latitude;
   let originLon = coords.longitude;
-  //const originLon = await postCodeToLatLng(postcode);
-  console.log('Origin coordinates:', originLat, originLon);
+  console.log('Starting coordinates:', originLat, originLon);
 
   let button = document.getElementById('postcode');
 
@@ -65,9 +28,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   button.addEventListener('click', async event => {
     let postcode = document.getElementById('postcode-input').value;
-    console.log('POSTCODE: ', postcode);
+    console.log('NEW POSTCODE: ', postcode);
     let newCoords = await postCodeToLatLng(postcode);
-    console.log('COORDS: ', newCoords);
+    console.log('NEW COORDS: ', newCoords);
     originLat = newCoords.latitude;
     originLon = newCoords.longitude;
 
@@ -103,12 +66,54 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
 });
 
-async function fetchIsochrone(
-  userSelectedModel,
-  originLat,
-  originLon,
-  subscriptionKey
-) {
+// ------------------
+
+async function getVehicleStats(carmodel) {
+  try {
+    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
+    const data = await response.json();
+    console.log('Vehicle stats from database:', data.data);
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching vehicle stats:', error);
+    return {};
+  }
+}
+
+
+async function getUserPostcode(userId) {
+  try {
+    const response = await fetch(`http://localhost:3000/users/${userId}`);
+      const resData = await response.json();
+      const postcode = resData.data.start_location;
+      console.log('User postcode:', postcode);
+      return postcode;
+  } catch (error) {
+    console.log('Invalid postcode');
+  }
+}
+
+
+async function postCodeToLatLng(postcode) {
+  let latlng;
+  try {
+    let response = await fetch(
+      `https://api.postcodes.io/postcodes/${postcode}`
+    );
+    let resData = await response.json();
+    latlng = {
+      latitude: resData.result.latitude,
+      longitude: resData.result.longitude,
+    };
+    console.log(latlng);
+    return latlng;
+  } catch (error) {
+    console.log('Invalid postcode');
+  }
+}
+
+
+async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey) {
   const {
     battery_capacity_kwh,
     brand,
@@ -121,8 +126,8 @@ async function fetchIsochrone(
     plug_type,
     powertrain,
     rapid_charge,
-    top_speed_kmh,
-  } = await getVehicleStats(userSelectedModel);
+    top_speed_kmh
+  } = await getVehicleStats(userSelectedModel)
 
   // We will need an event listener here to recieve environmental variables (weather conditions,
   // passenger number, etc.) from the user on the map, and use that information to mutate the range, or
@@ -168,4 +173,4 @@ async function fetchIsochrone(
       map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
     })
     .catch(console.error);
-}
+  }

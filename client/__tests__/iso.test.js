@@ -1,8 +1,4 @@
-/**
- * Unit tests for isochrone map functionality
- * 
- * Uses Jest for testing framework
- */
+/** @jest-environment jsdom */
 
 // Mock the fetch API
 global.fetch = jest.fn();
@@ -22,7 +18,6 @@ global.atlas = {
   Map: jest.fn(() => ({
     events: {
       add: jest.fn((event, callback) => {
-        // Store the callback so we can trigger it in tests
         if (event === 'ready') {
           global.mapReadyCallback = callback;
         }
@@ -39,6 +34,7 @@ global.atlas = {
   source: {
     DataSource: jest.fn(() => ({
       add: jest.fn(),
+      clear: jest.fn(),
       getBounds: jest.fn(() => ({ min: { x: 0, y: 0 }, max: { x: 1, y: 1 } }))
     }))
   },
@@ -53,144 +49,160 @@ global.atlas = {
 // Mock DOM elements
 document.body.innerHTML = `
   <div id="myMap"></div>
+  <button id="postcode"></button>
+  <input id="postcode-input" />
 `;
 
 describe('Isochrone Map Functionality', () => {
   let originalDocument;
-  
+
   beforeAll(() => {
-    // Store original document.addEventListener
     originalDocument = document.addEventListener;
   });
-  
+
   beforeEach(() => {
-    // Clear all mocks before each test
     jest.clearAllMocks();
+    // Reset input value for each test
+    document.getElementById('postcode-input').value = '';
   });
-  
+
   afterAll(() => {
-    // Restore original document.addEventListener
     document.addEventListener = originalDocument;
   });
-  
+
   test('should initialize map with correct parameters', () => {
-    // Spy on document.addEventListener
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
-    // Required before importing the script
+
     window.localStorage.getItem.mockReturnValue('Model S');
-    
-    // Import the script being tested
-    require('./path-to-your-script.js');
-    
-    // Check if the map was initialized with correct parameters
-    expect(atlas.Map).toHaveBeenCalledWith('myMap', {
-      center: [-0.478, 51.586],
-      zoom: 11,
-      authOptions: {
+
+    require('../scripts/iso2.js');
+
+    expect(atlas.Map).toHaveBeenCalledWith('myMap', expect.objectContaining({
+      center: expect.any(Array),
+      zoom: 5,
+      authOptions: expect.objectContaining({
         authType: 'subscriptionKey',
         subscriptionKey: expect.any(String)
-      }
-    });
+      })
+    }));
   });
-  
+
   test('should fetch car model from localStorage', () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
+
     window.localStorage.getItem.mockReturnValue('Model X');
-    
+
     require('../scripts/iso2.js');
-    
+
     expect(window.localStorage.getItem).toHaveBeenCalledWith('carModel');
   });
-  
+
   test('should call getVehicleStats with correct model', async () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
+
     const mockModel = 'Tesla Model 3';
     window.localStorage.getItem.mockReturnValue(mockModel);
-    
-    // Mock successful fetch response
+
+    // Mock vehicle stats fetch
     global.fetch.mockResolvedValueOnce({
       json: () => Promise.resolve({
-        carTopSpeed: 210,
-        batteryCapacity: 75,
-        batteryCharge: 80,
-        batteryEfficiency: 0.18,
-        vehicleWeight: 1800
+        battery_capacity_kwh: 75,
+        brand: 'Tesla',
+        combined_wltp_range_km: 400,
+        efficiency_kmkwh: 0.18,
+        ev_car_image: '',
+        ev_id: 1,
+        fast_charge_kmh: 500,
+        model: mockModel,
+        plug_type: 'Type2',
+        powertrain: 'EV',
+        rapid_charge: true,
+        top_speed_kmh: 210
       })
     });
-    
+
+    // Mock isochrone fetch
+    global.fetch.mockResolvedValueOnce({
+      json: () => Promise.resolve({
+        reachableRange: {
+          boundary: [
+            { latitude: 51.6, longitude: -0.5 },
+            { latitude: 51.7, longitude: -0.4 }
+          ]
+        }
+      })
+    });
+
     require('../scripts/iso2.js');
-    
-    // Trigger the map ready event
     await global.mapReadyCallback();
-    
-    // Check if fetch was called with correct URL
-    expect(global.fetch).toHaveBeenCalledWith(`/ev/model/${mockModel}`);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('/evs/model/' + encodeURIComponent(mockModel))
+    );
   });
-  
+
   test('should handle errors in getVehicleStats', async () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
-    // Mock failed fetch
+
     const mockError = new Error('API error');
     global.fetch.mockRejectedValueOnce(mockError);
-    
-    // Spy on console.error
+
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-    
+
     window.localStorage.getItem.mockReturnValue('Model Y');
-    
+
     require('../scripts/iso2.js');
-    
-    // Trigger the map ready event
     await global.mapReadyCallback();
-    
-    // Check if console.error was called
+
     expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching vehicle stats:', mockError);
-    
-    // Restore console.error
+
     consoleErrorSpy.mockRestore();
   });
-  
+
   test('should fetch and render isochrone polygon', async () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
+
     window.localStorage.getItem.mockReturnValue('Nissan Leaf');
-    
-    // Mock successful vehicle stats fetch
+
+    // Mock vehicle stats fetch
     global.fetch.mockResolvedValueOnce({
       json: () => Promise.resolve({
-        carTopSpeed: 144,
-        batteryCapacity: 40,
-        batteryCharge: 90,
-        batteryEfficiency: 0.15,
-        vehicleWeight: 1580
+        battery_capacity_kwh: 40,
+        brand: 'Nissan',
+        combined_wltp_range_km: 270,
+        efficiency_kmkwh: 0.15,
+        ev_car_image: '',
+        ev_id: 2,
+        fast_charge_kmh: 300,
+        model: 'Leaf',
+        plug_type: 'Type2',
+        powertrain: 'EV',
+        rapid_charge: true,
+        top_speed_kmh: 144
       })
     });
-    
-    // Mock successful isochrone fetch
+
+    // Mock isochrone fetch
     const mockIsochroneResponse = {
       reachableRange: {
         boundary: [
@@ -202,107 +214,114 @@ describe('Isochrone Map Functionality', () => {
         ]
       }
     };
-    
+
     global.fetch.mockResolvedValueOnce({
       json: () => Promise.resolve(mockIsochroneResponse)
     });
-    
+
     require('../scripts/iso2.js');
-    
-    // Trigger the map ready event
     await global.mapReadyCallback();
-    
+
     // Check if the isochrone API was called
     expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('https://atlas.microsoft.com/route/range/json'));
-    
+
     // Check if polygon was created with correct coordinates
     const expectedCoords = mockIsochroneResponse.reachableRange.boundary.map(pt => [pt.longitude, pt.latitude]);
     expect(atlas.data.Polygon).toHaveBeenCalledWith([expectedCoords]);
-    
+
     // Check if polygon was added to datasource
     expect(atlas.source.DataSource().add).toHaveBeenCalled();
-    
+
     // Check if polygon layer was added to map
     expect(atlas.layer.PolygonLayer).toHaveBeenCalledWith(
       expect.anything(),
       null,
       expect.objectContaining({
-        fillColor: 'rgb(255, 0, 0)',
+        fillColor: 'rgb(0, 136, 255)',
         strokeColor: 'blue',
         strokeWidth: 2
       })
     );
-    
+
     // Check if map camera was set to polygon bounds
     expect(atlas.Map().setCamera).toHaveBeenCalledWith({
       bounds: expect.anything(),
       padding: 20
     });
   });
-  
+
   test('should handle isochrone API errors', async () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
+
     window.localStorage.getItem.mockReturnValue('Test Model');
-    
-    // Mock successful vehicle stats fetch
+
+    // Mock vehicle stats fetch
     global.fetch.mockResolvedValueOnce({
       json: () => Promise.resolve({
-        carTopSpeed: 180,
-        batteryCapacity: 60,
-        batteryCharge: 85,
-        batteryEfficiency: 0.17,
-        vehicleWeight: 1650
+        battery_capacity_kwh: 60,
+        brand: 'Test',
+        combined_wltp_range_km: 350,
+        efficiency_kmkwh: 0.17,
+        ev_car_image: '',
+        ev_id: 3,
+        fast_charge_kmh: 400,
+        model: 'Test Model',
+        plug_type: 'Type2',
+        powertrain: 'EV',
+        rapid_charge: true,
+        top_speed_kmh: 180
       })
     });
-    
+
     // Mock failed isochrone fetch
     const mockError = new Error('Isochrone API error');
     global.fetch.mockRejectedValueOnce(mockError);
-    
-    // Spy on console.error
+
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-    
+
     require('../scripts/iso2.js');
-    
-    // Trigger the map ready event
     await global.mapReadyCallback();
-    
-    // Check if console.error was called
+
     expect(consoleErrorSpy).toHaveBeenCalledWith(mockError);
-    
-    // Restore console.error
+
     consoleErrorSpy.mockRestore();
   });
-  
+
   test('should construct isochrone URL with correct parameters', async () => {
     document.addEventListener = jest.fn((event, callback) => {
       if (event === 'DOMContentLoaded') {
         callback();
       }
     });
-    
+
     const mockModel = 'BMW i3';
     window.localStorage.getItem.mockReturnValue(mockModel);
-    
-    // Mock successful vehicle stats fetch with specific values
+
+    // Mock vehicle stats fetch
     const mockStats = {
-      carTopSpeed: 150,
-      batteryCapacity: 42,
-      batteryCharge: 75,
-      batteryEfficiency: 0.16,
-      vehicleWeight: 1345
+      battery_capacity_kwh: 42,
+      brand: 'BMW',
+      combined_wltp_range_km: 300,
+      efficiency_kmkwh: 0.16,
+      ev_car_image: '',
+      ev_id: 4,
+      fast_charge_kmh: 350,
+      model: mockModel,
+      plug_type: 'Type2',
+      powertrain: 'EV',
+      rapid_charge: true,
+      top_speed_kmh: 150
     };
-    
+
     global.fetch.mockResolvedValueOnce({
       json: () => Promise.resolve(mockStats)
     });
-    
-    // Mock successful isochrone fetch
+
+    // Mock isochrone fetch
     global.fetch.mockResolvedValueOnce({
       json: () => Promise.resolve({
         reachableRange: {
@@ -313,25 +332,16 @@ describe('Isochrone Map Functionality', () => {
         }
       })
     });
-    
+
     require('../scripts/iso2.js');
-    
-    // Trigger the map ready event
     await global.mapReadyCallback();
-    
+
     // Check if fetch was called with URL containing correct parameters
-    const expectedUrlParts = [
-      'https://atlas.microsoft.com/route/range/json',
-      'api-version=1.0',
-      'query=51.586,-0.478',
-      'distanceBudgetInMeters=400000',
-      `vehicleMaxSpeed=${mockStats.carTopSpeed}`,
-      `vehicleWeight=${mockStats.vehicleWeight}`
-    ];
-    
     const fetchCall = global.fetch.mock.calls[1][0];
-    expectedUrlParts.forEach(part => {
-      expect(fetchCall).toContain(part);
-    });
+    expect(fetchCall).toContain('https://atlas.microsoft.com/route/range/json');
+    expect(fetchCall).toContain('api-version=1.0');
+    expect(fetchCall).toContain('query=');
+    expect(fetchCall).toContain(`distanceBudgetInMeters=${mockStats.combined_wltp_range_km * 1000 * 0.5}`);
+    expect(fetchCall).toContain(`vehicleMaxSpeed=${mockStats.top_speed_kmh}`);
   });
 });
