@@ -48,7 +48,7 @@ async function getIsochrone(req, res) {
     console.log(response.data);
     res.status(200).json({ success: true, data: response.data });
   } catch (err) {
-    res.status(404).json({ message: 'Unable to fetch isochrone data' });
+    res.status(404).json({ error: 'Unable to fetch isochrone data' });
   }
 }
 
