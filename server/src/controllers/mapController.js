@@ -40,12 +40,11 @@ async function getIsochrone(req, res) {
     };
 
     const response = await axios.get(
-      'https://atlas.microsoft.com/route/range/json',
+      `${process.env.AZURE_BASE_URL}/route/range/json`,
       {
         params,
       }
     );
-    console.log(response.data);
     res.status(200).json({ success: true, data: response.data });
   } catch (err) {
     res.status(404).json({ error: 'Unable to fetch isochrone data' });
