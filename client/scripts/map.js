@@ -1,15 +1,4 @@
-export async function getVehicleStats(carmodel) {
-  try {
-    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
-    const data = await response.json();
-    console.log('Vehicle stats from database:', data.data);
-    return data.data;
-  } catch (error) {
-    console.error('Error fetching vehicle stats:', error);
-    return {};
-  }
-}
-
+import { getVehicleStats } from "./vehicleStats.js";
 
 async function getUserPostcode(userId) {
   try {
@@ -22,7 +11,6 @@ async function getUserPostcode(userId) {
     console.log('Invalid postcode');
   }
 }
-
 
 async function postCodeToLatLng(postcode) {
   let latlng;
@@ -136,7 +124,7 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
     if (!userSelectedModel) {
       console.error('No car model selected. Please select a car model.');
-      window.location.replace('/select-vehicle.html');
+      window.location.replace('/group1-project/client/views/select-vehicle.html');
     }
 
     let batteryCharge = 1

@@ -1,4 +1,4 @@
-import { getVehicleStats } from "./map.js";
+import { getVehicleStats } from "./vehicleStats.js";
 
 document.getElementById("vehicle-dropdown").addEventListener("change", async function () {
     const selectedModel = this.value;

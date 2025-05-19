@@ -68,7 +68,7 @@ describe('Full user registration and login journey, landing page to select vehic
     
     // Submit the vehicle selection form
     // Using a more generic approach since the exact submit button selector wasn't specified
-    cy.get('button[type="submit"]').click();
+    cy.get('#vehicle-selection-button').click();
     // Alternative approach: cy.get('form').submit();
     
     // Verify navigation to the map page
@@ -122,7 +122,7 @@ describe('Full user registration and login journey, landing page to select vehic
     
     // Check all four vehicle options are available
     cy.get('#vehicle-dropdown').should('be.visible')
-      .find('option').should('have.length', 4);
+      .find('option').should('have.length', 5);
     
     // Test each vehicle option
     const vehicles = ['Tesla Model 3', 'Kia e-Niro', 'Audi e-tron GT', 'BMW iX3'];
