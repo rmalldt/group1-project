@@ -139,17 +139,17 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
 async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential) {
   const {
-    battery_capacity_kwh,
-    brand,
+    // battery_capacity_kwh,
+    // brand,
     combined_wltp_range_km,
-    efficiency_kmkwh,
-    ev_car_image,
-    ev_id,
-    fast_charge_kmh,
-    model,
-    plug_type,
-    powertrain,
-    rapid_charge,
+    // efficiency_kmkwh,
+    // ev_car_image,
+    // ev_id,
+    // fast_charge_kmh,
+    // model,
+    // plug_type,
+    // powertrain,
+    // rapid_charge,
     top_speed_kmh
   } = await getVehicleStats(userSelectedModel)
 

@@ -125,7 +125,7 @@ describe('Full user registration and login journey, landing page to select vehic
       .find('option').should('have.length', 5);
     
     // Test each vehicle option
-    const vehicles = ['Tesla Model 3', 'Kia e-Niro', 'Audi e-tron GT', 'BMW iX3'];
+    const vehicles = ['Model 3 Standard Range Plus', 'e-Niro 64 kWh', 'e-tron GT', 'iX3'];
     
     vehicles.forEach(vehicle => {
       cy.get('#vehicle-dropdown').select(vehicle);
