@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev nodemon -L ./src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon -L ./src/index.js",
     "start": "node ./src/index.js",
-    "setup-db": "cross-env NODE_ENV=dev node ./src/db/setup.js",
+    "setup-db": "cross-env NODE_ENV=development node ./src/db/setup.js",
     "test:dev": "jest --watchAll --detectOpenHandles --runInBand --verbose",
     "test": "jest --detectOpenHandles --runInBand --verbose",
     "coverage": "jest --coverage"
