@@ -22,6 +22,8 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   if (response.status === 200 && data.token) {
     // Save JWT in localStorage
     localStorage.setItem("token", data.token);
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("postcode", data.start_location);
 
     alert("Login successful!");
     window.location.assign("./select-vehicle.html"); 
@@ -51,7 +53,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     let errors = []
 
     if(username === '' || username === null){
-        errors.push('Email is required')
+        errors.push('Username is required')
         usernameInput.parentElement.classList.add('incorrect')
     }
 

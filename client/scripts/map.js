@@ -1,16 +1,4 @@
-
-async function getVehicleStats(carmodel) {
-  try {
-    const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
-    const data = await response.json();
-    console.log('Vehicle stats from database:', data.data);
-    return data.data;
-  } catch (error) {
-    console.error('Error fetching vehicle stats:', error);
-    return {};
-  }
-}
-
+import { getVehicleStats } from "./vehicleStats.js";
 
 async function getUserPostcode(userId) {
   try {
@@ -23,7 +11,6 @@ async function getUserPostcode(userId) {
     console.log('Invalid postcode');
   }
 }
-
 
 async function postCodeToLatLng(postcode) {
   let latlng;
@@ -91,9 +78,7 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
     );
 });
 
-
-
-  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
+  // let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
 
   // localStorage.setItem('userId', '1'); // This should be replaced with the user's ID from the database
   //const userId = localStorage.getItem('userId');
@@ -101,6 +86,9 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
   //   console.log('User postcode:', data);
   //   return data;
   // }));
+
+  let postcode = localStorage.getItem('postcode') || 'S1 1AA'; // Fallback to S1 1AA if no postcode in localStorage
+  document.getElementById('postcode-input').value = postcode; // Prepopulate the postcode input box
 
   const coords = await postCodeToLatLng(postcode);
   let originLat = coords.latitude;
@@ -137,10 +125,14 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
     if (!userSelectedModel) {
       console.error('No car model selected. Please select a car model.');
-      window.location.replace('/select-vehicle.html');
+      window.location.replace('/group1-project/client/views/select-vehicle.html');
     }
 
-    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge=1, weatherConditionDifferential=1, passengerDifferential=1);
+    let batteryCharge = 1
+    let weatherConditionDifferential = 1
+    let passengerDifferential = 1 // initial map renders with these variable values
+
+    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential);
   });
 });
 
@@ -148,17 +140,17 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
 async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential) {
   const {
-    battery_capacity_kwh,
-    brand,
+    // battery_capacity_kwh,
+    // brand,
     combined_wltp_range_km,
-    efficiency_kmkwh,
-    ev_car_image,
-    ev_id,
-    fast_charge_kmh,
-    model,
-    plug_type,
-    powertrain,
-    rapid_charge,
+    // efficiency_kmkwh,
+    // ev_car_image,
+    // ev_id,
+    // fast_charge_kmh,
+    // model,
+    // plug_type,
+    // powertrain,
+    // rapid_charge,
     top_speed_kmh
   } = await getVehicleStats(userSelectedModel)
 
