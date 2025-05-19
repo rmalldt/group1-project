@@ -1,5 +1,7 @@
 const User = require('../../../models/userModels');
 const userController = require('../../../controllers/userController');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 jest.mock('../../../models/userModels');
 
@@ -154,6 +156,105 @@ describe('User Controller', () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: 'Deletion failed' });
+    });
+
+    describe('login', () => {
+      it('should authenticate a user and return a token with status 200', async () => {
+        req.body = { username: 'testuser', password: 'password123' };
+
+        const mockUser = {
+          id: 1,
+          username: 'testuser',
+          password: 'hashedpassword',
+          start_location: 'location1',
+        };
+
+        User.getOneByUsername.mockResolvedValue(mockUser);
+        jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+        jest.spyOn(jwt, 'sign').mockImplementation((payload, secret, options, callback) => {
+          callback(null, 'mockToken');
+        });
+
+        await userController.login(req, res);
+
+        expect(User.getOneByUsername).toHaveBeenCalledWith('testuser');
+        expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedpassword');
+        expect(jwt.sign).toHaveBeenCalledWith(
+          { username: 'testuser' },
+          process.env.SECRET_TOKEN,
+          { expiresIn: 3600 },
+          expect.any(Function)
+        );
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({
+          success: true,
+          token: 'mockToken',
+          userId: 1,
+          start_location: 'location1',
+        });
+      });
+
+      it('should return 401 if username is not found', async () => {
+        req.body = { username: 'nonexistent', password: 'password123' };
+
+        User.getOneByUsername.mockResolvedValue(null);
+
+        await userController.login(req, res);
+
+        expect(User.getOneByUsername).toHaveBeenCalledWith('nonexistent');
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ error: 'No user with this username' });
+      });
+
+      it('should return 401 if password does not match', async () => {
+        req.body = { username: 'testuser', password: 'wrongpassword' };
+
+        const mockUser = {
+          id: 1,
+          username: 'testuser',
+          password: 'hashedpassword',
+        };
+
+        User.getOneByUsername.mockResolvedValue(mockUser);
+        jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
+
+        await userController.login(req, res);
+
+        expect(User.getOneByUsername).toHaveBeenCalledWith('testuser');
+        expect(bcrypt.compare).toHaveBeenCalledWith('wrongpassword', 'hashedpassword');
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ error: 'User could not be authenticated.' });
+      });
+
+      it('should return 401 if token generation fails', async () => {
+        req.body = { username: 'testuser', password: 'password123' };
+
+        const mockUser = {
+          id: 1,
+          username: 'testuser',
+          password: 'hashedpassword',
+          start_location: 'location1',
+        };
+
+        User.getOneByUsername.mockResolvedValue(mockUser);
+        jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+        jest.spyOn(jwt, 'sign').mockImplementation((payload, secret, options, callback) => {
+          callback(new Error('Token generation error'), null);
+        });
+
+        await userController.login(req, res);
+
+        expect(User.getOneByUsername).toHaveBeenCalledWith('testuser');
+        expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedpassword');
+        expect(jwt.sign).toHaveBeenCalledWith(
+          { username: 'testuser' },
+          process.env.SECRET_TOKEN,
+          { expiresIn: 3600 },
+          expect.any(Function)
+        );
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Error in token generation' });
+      });
     });
   });
 });
