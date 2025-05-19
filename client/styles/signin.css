@@ -134,3 +134,18 @@ a{
   }
 }
 
+form div.incorrect label{
+    background-color: #f06272;
+}
+
+form div.incorrect input{
+    border-color:  #f06272;
+}
+
+#error-message{
+    color: #f06272;
+}
+
+.incorrect input {
+    border-color: red !important;
+}
