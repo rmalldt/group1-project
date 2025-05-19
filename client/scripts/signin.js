@@ -18,10 +18,16 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   const response = await fetch("http://localhost:3000/users/login", options);
   const data = await response.json();
+  console.log(data);
+
 
   if (response.status === 200 && data.token) {
-    // Save JWT in localStorage
+    // Save JWT in localStorage and userId & postcode
+    console.log("Login response data:", data);
+    
     localStorage.setItem("token", data.token);
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("postcode", data.start_location);
 
     alert("Login successful!");
     window.location.assign("./select-vehicle.html"); 
@@ -51,7 +57,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     let errors = []
 
     if(username === '' || username === null){
-        errors.push('Email is required')
+        errors.push('Username is required')
         usernameInput.parentElement.classList.add('incorrect')
     }
 
