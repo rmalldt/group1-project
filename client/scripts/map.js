@@ -139,7 +139,11 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
       window.location.replace('/select-vehicle.html');
     }
 
-    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge=1, weatherConditionDifferential=1, passengerDifferential=1);
+    let batteryCharge = 1
+    let weatherConditionDifferential = 1
+    let passengerDifferential = 1 // initial map renders with these variable values
+
+    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential);
   });
 });
 
