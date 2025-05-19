@@ -12,7 +12,6 @@ async function getAzureToken(req, res) {
     AZURE_TENANT_ID,
     AZURE_BASE_URL,
   } = process.env;
-  console.log('IDS: ', AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID);
 
   try {
     const tokenResponse = await axios.post(
