@@ -78,9 +78,7 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
     );
 });
 
-
-
-  let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
+  // let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
 
   // localStorage.setItem('userId', '1'); // This should be replaced with the user's ID from the database
   //const userId = localStorage.getItem('userId');
@@ -88,6 +86,9 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
   //   console.log('User postcode:', data);
   //   return data;
   // }));
+
+  let postcode = localStorage.getItem('postcode') || 'S1 1AA'; // Fallback to S1 1AA if no postcode in localStorage
+  document.getElementById('postcode-input').value = postcode; // Prepopulate the postcode input box
 
   const coords = await postCodeToLatLng(postcode);
   let originLat = coords.latitude;
