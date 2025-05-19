@@ -1,57 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="styles" href="../styles/select-vehicle.css">
-        <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
-
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <script src="../scripts/select-vehicle.js" defer></script>
+    <link rel="stylesheet" href="../styles/select-vehicle.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="module" src="../scripts/select-vehicle.js" defer></script>
     <title>Select Vehicle</title>
 </head>
+ 
 <body>
-
+ 
     <main class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
-
+        <div class="back-button-container">
+            <button class="back-button" onclick="window.location.href='signin.html'" aria-label="Log out">← Logout</button>
+        </div>
         <div class="w-100" style="max-width: 400px;">
             <div class="logo">
-                <!-- SVG or image for the logo -->
                 <img src="../assets/logo/logo_vector.svg" class="logo-img" alt="logo-image">
             </div>
-            <header> 
-                <button onclick="window.location.href='signin.html'" aria-label="Go back"> Logout</button>
+            <header>
                 <h1>Select Your Vehicle</h1>
                 <p>Please choose the electric vehicle you'd like to explore.</p>
             </header>
-
+ 
             <section class="vehicle-select">
-                <label for="vehicle-dropdown">Vehicle</label>
-
+                <label for="vehicle-dropdown"></label>
                 <select id="vehicle-dropdown" name="vehicle" required>
-                <option value="">-- Select your EV model --</option>
-                <option value="Model 3 Standard Range Plus">Tesla Model 3</option>
-                <option value="e-Niro 64 kWh">Kia e-Niro</option>
-                <option value="e-tron GT">Audi e-tron GT</option>
-                <option value="iX3">BMW iX3</option>
+                    <option value="">-- Select your EV model --</option>
+                    <option value="Model 3 Standard Range Plus">Tesla Model 3</option>
+                    <option value="e-Niro 64 kWh">Kia e-Niro</option>
+                    <option value="e-tron GT">Audi e-tron GT</option>
+                    <option value="iX3">BMW iX3</option>
                 </select>
             </section>
-
+ 
             <div class="d-flex justify-content-center mb-3">
-                <img src="../assets/logo/car-placeholder.png" alt="Placeholder Car" class="img-fluid border placeholder-car" />
-            
+                <img id="car-image" src="../assets/images/car-outline.jpg" alt="EV image"
+                    class="img-fluid border placeholder-car" />
             </div>
-            
-            <p><strong>Range:</strong> 240 miles</p>
-            <p><strong>Manufacturer:</strong> XYZ Motors</p>
-            
+ 
+            <p><strong>Range:</strong> <span id="car-range"> --- </span> miles</p>
+            <p><strong>Manufacturer:</strong> <span id="car-manufacturer"> --- </span></p>
+ 
             <button type="button" onclick="window.location.href='map.html'" class="btn btn-dark w-100">Submit</button>
-
-    
         </div>
-
-</main>
-
+    </main>
+ 
 </body>
+ 
 </html>

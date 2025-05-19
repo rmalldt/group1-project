@@ -1,37 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:wght@300;400;500;600;700&display=swap');
+ 
+:root {
+    --accent-color: #64b4f6;
+    --base-color: white;
+    --text-color: #2E2B41;
+    --input-color: #F3F0FF;
+    --color-for-checking: gray;
+}
+ 
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+ 
+html {
+    box-sizing: border-box;
+    font-family: Fredoka, 'Segoe UI', sans-serif;
+    color: var(--text-color);
+    text-align: center;
+}
+ 
 body {
-    font-family: 'Fredoka', sans-serif;
-    background-color: #f8f9fa;
+    min-height: 100dvh;
+    font-weight: 300;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--base-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
 }
-
-h2 {
-    color: #005477;
-}
-
-.btn-dark {
-    background-color: #007B8B;
-    border: none;
-}
-
-.btn-dark:hover {
-    background-color: #005477;
-}
-
-.form-label {
-    font-weight: 500;
-}
-
+ 
+/* Logo */
 .logo {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
 }
-
+ 
 .logo-img {
     width: 100px;
     height: auto;
 }
-
-.placeholder-car {
-    max-height: 200px;
-    object-fit: contain;
+ 
+/* Headinnng */
+h1 {
+    font-size: 2rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+ 
+/* Droopdown styling */
+.vehicle-select {
+    width: min(400px, 100%);
+    margin: 20px auto;
+}
+ 
+.vehicle-select select {
+    width: 100%;
+    padding: 0.85em 1em;
+    border-radius: 10px;
+    border: 2px solid var(--accent-color);
+    background-color: var(--input-color);
+    font-family: inherit;
+    transition: 150ms ease;
+}
+ 
+.vehicle-select select:hover {
+    border-color: var(--text-color);
+}
+ 
+.vehicle-select select:focus {
+    outline: none;
+    border-color: var(--text-color);
+}
+ 
+/* Carr image */
+#car-image {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+}
+ 
+/* Range plus Manufacturer */
+.vehicle-info {
+    width: min(400px, 100%);
+    margin-bottom: 1rem;
+}
+ 
+.vehicle-info p {
+    margin: 0.25rem 0;
+    text-align: center;
+    font-size: 1rem;
+}
+ 
+/* Submiit button */
+.submit-button {
+    width: min(400px, 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.85em 4em;
+    background-color: var(--accent-color);
+    color: var(--base-color);
+    font: inherit;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 150ms ease;
+}
+ 
+.submit-button:hover {
+    background-color: var(--text-color);
+}
+ 
+/* Backk button */
+.back-button-container {
+    width: min(400px, 100%);
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+ 
+.back-button {
+    color: var(--text-color);
+    border: none;
+    background-color: transparent;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+ 
+.back-button:hover {
+    color: var(--accent-color);
+}
+ 
+/* Resspponsive laayout */
+@media (max-width: 500px) {
+    body {
+        padding: 0 1rem;
+    }
 }

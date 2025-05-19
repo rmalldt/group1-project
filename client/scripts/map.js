@@ -1,5 +1,5 @@
 
-async function getVehicleStats(carmodel) {
+export async function getVehicleStats(carmodel) {
   try {
     const response = await fetch(`http://localhost:3000/evs/model/${carmodel}`);
     const data = await response.json();
