@@ -3,6 +3,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   const form = new FormData(e.target);
 
+
     const options = {
     method: "POST",
     headers: {
@@ -10,48 +11,48 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      email: form.get("email"),
-      password: form.get("password")
+      username: form.get("username"),
+      password: form.get("password"),
     })
   };
 
-            const response = await fetch("http://localhost:3000/users/login", options);
-            const data = await response.json();
+  const response = await fetch("http://localhost:3000/users/login", options);
+  const data = await response.json();
 
-            if (response.status === 200 && data.token) {
-            // Save JWT in localStorage
-            localStorage.setItem("token", data.token);
+  if (response.status === 200 && data.token) {
+    // Save JWT in localStorage
+    localStorage.setItem("token", data.token);
 
-            alert("Login successful!");
-            window.location.assign("./select-vehicle.html"); 
-        } else {
-            alert(data.error || "Login failed.");
-        }
+    alert("Login successful!");
+    window.location.assign("./select-vehicle.html"); 
+  } else {
+    alert(data.error || "Login failed.");
+  }
 });
 
-    const form = document.getElementById('login-form')
-    const emailInput = document.getElementById('email-input')
-    const passwordInput = document.getElementById('password-input')
-    const errorMessage = document.getElementById('error-message')
+  const form = document.getElementById('login-form')
+  const usernameInput = document.getElementById('username-input')
+  const passwordInput = document.getElementById('password-input')
+  const errorMessage = document.getElementById('error-message')
 
 
-    form.addEventListener('submit', (e) => {
-        // calling the validation logic
-        let errors = getLoginFormErrors(emailInput.value, passwordInput.value)
+  form.addEventListener('submit', (e) => {
+    // calling the validation logic
+    let errors = getLoginFormErrors(usernameInput.value, passwordInput.value)
 
-        if(errors.length > 0){
-            e.preventDefault()
-            errorMessage.innerText = errors.join(". ")
-        }
+    if(errors.length > 0){
+      e.preventDefault()
+      errorMessage.innerText = errors.join(". ")
+      }
    });
 
 
-    function getLoginFormErrors(email, password){
+  function getLoginFormErrors(username, password){
     let errors = []
 
-    if(email === '' || email === null){
+    if(username === '' || username === null){
         errors.push('Email is required')
-        emailInput.parentElement.classList.add('incorrect')
+        usernameInput.parentElement.classList.add('incorrect')
     }
 
     if(password === '' || password === null){
@@ -63,7 +64,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     };
 
     // removes input highlighting when typing
-    const allInputs = [emailInput, passwordInput]
+    const allInputs = [usernameInput, passwordInput]
     allInputs.forEach(input => {
     input.addEventListener('input', () => {
         if(input.parentElement.classList.contains('incorrect')){

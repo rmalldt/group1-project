@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins&display=swap');
+
+:root {
+  --accent-color: #64b4f6;
+  --base-color: white;
+  --text-color: #2E2B41;
+  --input-color: #F3F0FF;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Fredoka, 'Segoe UI', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 100vh;
+}
+
+.iphone-image {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 2rem;
+}
+
+.mac-image {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  /* margin-bottom: 2rem; */
+}
+
+.charging-image{
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  /* margin-bottom: 2rem; */
+}
+
+.scroll-container {
+  display: flex;
+  flex-direction: row;
+  width: 300vw;
+  height: 100vh;
+}
+
+.section {
+  flex: 0 0 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  padding: 2rem;
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 90%;
+  margin-top: 1rem
+}
+
+.section h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--base-color);
+  text-transform: uppercase;
+}
+
+.section p {
+  font-size: 1rem;
+  color: var(--base-color);
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  padding: 0.5em;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 150ms ease;
+  z-index: 100;
+}
+
+.nav-button:hover {
+  transform: translateY(-50%) scale(1.2);
+}
+
+.nav-button svg path {
+  transition: fill 150ms ease;
+}
+
+.nav-button:hover svg path {
+  fill: var(--accent-color);
+}
+
+.nav-button.next {
+  right: 0.5rem;
+}
+
+.nav-button.prev {
+  left: 0.5rem;
+}
+
+.logo {
+  position: fixed;
+  top: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+#section-1 {
+  background: linear-gradient(to bottom, #62BBFE 0%, #02577B 88%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+}
+
+#section-2 {
+    background: linear-gradient(to bottom, #62BBFE 0%, #02577B 88%);
+}
+
+#section-3 {
+  background: linear-gradient(to bottom, #62BBFE 0%, #02577B 88%);
+}
+
+.signup-button {
+  margin-top: 1.5rem;
+  padding: 0.8rem 1.6rem;
+  background-color: var(--accent-color);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.signup-button:hover {
+  background-color: #4ca0e6; /* darker version of accent */
+  transform: scale(1.05);
+}
+
+
+@media (max-width: 500px) {
+  .section h1 {
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 500px) {
+  .iphone-image {
+    max-width: 250px;
+    margin-bottom: 1.5rem;
+  }
+}
+
+  .section p {
+    font-size: 0.95rem;
+  }
+
+  .logo {
+    width: 90px;
+  }
+}
+ 
