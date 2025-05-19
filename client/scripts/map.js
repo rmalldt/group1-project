@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
 
-  const drawer = document.getElementById("drawer");
+const drawer = document.getElementById("drawer");
 const toggleBtn = document.getElementById("toggleDrawer");
 
   toggleBtn.addEventListener("click", () => {
@@ -109,7 +109,6 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
   let userSelectedModel = localStorage.getItem('carModel');
   console.log('User selected model:', userSelectedModel)
 
-
 // ------------------------
 
   // Initialise the map
@@ -134,6 +133,11 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
     console.log('Map is ready');
     console.log('User selected model:', userSelectedModel);
+
+    if (!userSelectedModel) {
+      console.error('No car model selected. Please select a car model.');
+      window.location.replace('/select-vehicle.html');
+    }
 
     fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge=1, weatherConditionDifferential=1, passengerDifferential=1);
   });
