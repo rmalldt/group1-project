@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
-const connect = require('./connect');
+const connect = require('../../db/connect');
 
 dotenv.config();
 
@@ -61,7 +61,7 @@ describe('setDb', () => {
         process.env.DB_HOST = 'host';
         process.env.DB_NAME = 'database';
         process.env.DB_PASSWORD = 'password';
-        process.env.DB_PORT = "5432";
+        process.env.DB_PORT = '5432';
 
         setDb();
 
@@ -70,7 +70,14 @@ describe('setDb', () => {
             host: process.env.DB_HOST,
             database: process.env.DB_NAME,
             password: process.env.DB_PASSWORD,
-            port: parseInt(process.env.DB_PORT, 10),
+            port: process.env.DB_PORT,
+        });
+        expect(Pool).toHaveBeenCalledWith({
+            user: "user",
+            host: "host",
+            database: "database",
+            password: "password",
+            port: "5432",
         });
         expect(console.log).toHaveBeenCalledWith(
             'DB connection established for production'

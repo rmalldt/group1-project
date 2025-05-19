@@ -133,5 +133,55 @@ describe('Ev Controller', () => {
       expect(mockStatus).toHaveBeenCalledWith(404);
       expect(mockJson).toHaveBeenCalledWith({ error: 'Db Error' });
     });
+
+    describe('getAllByBrand', () => {
+      let testEvs, mockReq;
+
+      beforeEach(() => {
+        testEvs = [
+          { brand: 'brand1', model: 'model1' },
+          { brand: 'brand1', model: 'model2' },
+        ];
+
+        mockReq = { params: { brand: 'brand1' } };
+      });
+
+      it('should return all EVs of a specific brand with a status code 200', async () => {
+        jest
+          .spyOn(Ev, 'getAllByBrand')
+          .mockResolvedValue({ data: testEvs, message: null });
+
+        await evController.getAllByBrand(mockReq, mockRes);
+
+        expect(Ev.getAllByBrand).toHaveBeenCalledWith('brand1');
+        expect(Ev.getAllByBrand).toHaveBeenCalledTimes(1);
+        expect(mockStatus).toHaveBeenCalledWith(200);
+        expect(mockJson).toHaveBeenCalledWith({ success: true, data: testEvs });
+      });
+
+      it('should return a 404 error if no data is found', async () => {
+        jest
+          .spyOn(Ev, 'getAllByBrand')
+          .mockResolvedValue({ data: null, message: 'No data found' });
+
+        await evController.getAllByBrand(mockReq, mockRes);
+
+        expect(Ev.getAllByBrand).toHaveBeenCalledWith('brand1');
+        expect(Ev.getAllByBrand).toHaveBeenCalledTimes(1);
+        expect(mockStatus).toHaveBeenCalledWith(404);
+        expect(mockJson).toHaveBeenCalledWith({ error: 'No data found' });
+      });
+
+      it('should return a 404 error upon failure', async () => {
+        jest.spyOn(Ev, 'getAllByBrand').mockRejectedValue(new Error('Db Error'));
+
+        await evController.getAllByBrand(mockReq, mockRes);
+
+        expect(Ev.getAllByBrand).toHaveBeenCalledWith('brand1');
+        expect(Ev.getAllByBrand).toHaveBeenCalledTimes(1);
+        expect(mockStatus).toHaveBeenCalledWith(404);
+        expect(mockJson).toHaveBeenCalledWith({ error: 'Db Error' });
+      });
+    });
   });
 });
