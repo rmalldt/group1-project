@@ -52,6 +52,7 @@ let polygonLayer;
 document.addEventListener('DOMContentLoaded', async function () {
 
 const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
+// We need to abstract this away from the source code
 
 const drawer = document.getElementById("drawer");
 const toggleBtn = document.getElementById("toggleDrawer");
@@ -161,14 +162,6 @@ async function fetchIsochrone(userSelectedModel, originLat, originLon, subscript
     top_speed_kmh
   } = await getVehicleStats(userSelectedModel)
 
-  // We will need an event listener here to recieve environmental variables (weather conditions,
-  // passenger number, etc.) from the user on the map, and use that information to mutate the range, or
-  // possibly even the vehicle weight.
-
-  // let weatherConditionDifferential = 1;
-  // let passengerDifferential = 1;
-  // let batteryCharge = 1;
-
   const isoUrl =
     `https://atlas.microsoft.com/route/range/json` +
     `?api-version=1.0` +
@@ -208,10 +201,3 @@ async function fetchIsochrone(userSelectedModel, originLat, originLon, subscript
     })
     .catch(console.error);
   }
-
-//   const drawer = document.getElementById("drawer");
-// const toggleBtn = document.getElementById("toggleDrawer");
-
-// toggleBtn.addEventListener("click", () => {
-//   drawer.classList.toggle("open");
-// });
