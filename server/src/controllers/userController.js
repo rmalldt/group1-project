@@ -59,6 +59,7 @@ async function login(req, res) {
           success: true,
           token: token,
           userId: user.id,
+          start_location: user.start_location
         });
       };
       jwt.sign(
