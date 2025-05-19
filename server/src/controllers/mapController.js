@@ -5,6 +5,35 @@ const Ev = require('../models/evModel');
 
 const subscriptionKey = process.env.AZURE_SUBKEY;
 
+async function getAzureToken(req, res) {
+  const {
+    AZURE_CLIENT_ID,
+    AZURE_CLIENT_SECRET,
+    AZURE_TENANT_ID,
+    AZURE_BASE_URL,
+  } = process.env;
+  console.log('IDS: ', AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID);
+
+  try {
+    const tokenResponse = await axios.post(
+      `https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/token`,
+      new URLSearchParams({
+        client_id: AZURE_CLIENT_ID,
+        scope: `${AZURE_BASE_URL}/.default`,
+        client_secret: AZURE_CLIENT_SECRET,
+        grant_type: 'client_credentials',
+      }),
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
+
+    console.log('TOKEN: ', tokenResponse.data.access_token);
+    res.status(200).json({ token: tokenResponse.data.access_token });
+  } catch (err) {
+    console.log('ERROR: ', err);
+    res.status(500).json({ error: 'Failed to get token ' });
+  }
+}
+
 async function getIsochrone(req, res) {
   const {
     model,
@@ -51,4 +80,4 @@ async function getIsochrone(req, res) {
   }
 }
 
-module.exports = { getIsochrone };
+module.exports = { getAzureToken, getIsochrone };
