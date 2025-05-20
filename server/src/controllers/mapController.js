@@ -1,6 +1,9 @@
 require('dotenv').config();
 const axios = require('axios');
+const NodeCache = require('node-cache');
 const Ev = require('../models/evModel');
+
+const tokenCache = new NodeCache({ stdTTL: 3600 }); // cache valid for 1hr
 
 async function getAzureToken(req, res) {
   const {
@@ -9,6 +12,11 @@ async function getAzureToken(req, res) {
     AZURE_TENANT_ID,
     AZURE_BASE_URL,
   } = process.env;
+
+  let token = tokenCache.get('azure_token');
+  if (token) {
+    return res.status(200).json({ token: token });
+  }
 
   try {
     const tokenResponse = await axios.post(
@@ -21,7 +29,10 @@ async function getAzureToken(req, res) {
       }),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
-    res.status(200).json({ token: tokenResponse.data.access_token });
+
+    token = tokenResponse.data.access_token;
+    tokenCache.set('azure_token', token, tokenResponse.data.expires_in - 120); // expire 2 min before the original token expires
+    res.status(200).json({ token: token });
   } catch (err) {
     res.status(500).json({ error: 'Failed to get token' });
   }
