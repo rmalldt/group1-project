@@ -1,10 +1,11 @@
-name: Development test coverage
+name: Test coverage
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
     branches:
       - 'development'
+      - 'main'
   workflow_dispatch:
 
 env:
@@ -16,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      PORT: ${{ vars.PORT }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -37,8 +39,8 @@ jobs:
         run: |
           COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.statements.pct")
           echo "Total coverage: $COVERAGE%" 
-          if (( $(echo "$COVERAGE < 60" | bc -l) )); then
-            echo "❌ Coverage is below 60%. Found: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+            echo "❌ Coverage is below 70%. Found: $COVERAGE%"
             exit 1
           else
             echo "✅ Coverage check passed."
