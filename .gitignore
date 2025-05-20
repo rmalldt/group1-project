@@ -15,4 +15,4 @@ terraform/config.md
 *.tfstate.backup
 
 # kubernetes 
-#configuration/kubernetes/api-configmap.yml
+configuration/kubernetes/api-configmap.yml
