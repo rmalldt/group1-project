@@ -21,7 +21,7 @@ variable "private_subnets" {
 }
 
 variable "cluster_name" {
-  default = "rangeiq-cluster"
+  default = "rangeiq-services-cluster"
 }
 
 variable "project_name" {
