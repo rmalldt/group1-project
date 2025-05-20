@@ -43,8 +43,8 @@ jobs:
           context: ./server
           push: true
           tags: |
-            ${{ env.DOCKER_USERNAME }}/countries-api-cld:${{ steps.vars.outputs.sha_short }}
-            ${{ env.DOCKER_USERNAME}}/countries-api-cld:latest
+            ${{ env.DOCKER_USERNAME }}/rangeiq-api:${{ steps.vars.outputs.sha_short }}
+            ${{ env.DOCKER_USERNAME}}/rangeiq-api:latest
 
       - name: Build and push Database Docker image
         uses: docker/build-push-action@v6
@@ -52,5 +52,5 @@ jobs:
           context: ./database
           push: true
           tags: |
-            ${{ env.DOCKER_USERNAME }}/countries-db-cld:${{ steps.vars.outputs.sha_short }}
-            ${{ env.DOCKER_USERNAME }}/countries-db-cld:latest
+            ${{ env.DOCKER_USERNAME }}/rangeiq-db:${{ steps.vars.outputs.sha_short }}
+            ${{ env.DOCKER_USERNAME }}/rangeiq-db:latest
