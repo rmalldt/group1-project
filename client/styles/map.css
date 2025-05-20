@@ -217,3 +217,36 @@ button[type="submit"] {
   font-size: 1rem;
 }
 
+@media (max-height: 420px) {
+  .drawer {
+    padding: 0.5rem;
+    max-height: 55%;
+    overflow-y: auto; /* Додає прокрутку, якщо щось не влізає */
+  }
+
+  #settingsForm {
+    gap: 0.5rem;
+    padding: 0.5rem 0.25rem;
+  }
+
+  .form-row {
+    gap: 0.5rem;
+    max-width: 50%; 
+  }
+
+  .form-group label {
+    font-size: 0.8rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  button[type="submit"] {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+

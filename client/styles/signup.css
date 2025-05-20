@@ -40,15 +40,6 @@ body {
     height: auto;
 }
 
-/* .wrapper{
-    background-color: var(--color-for-checking);
-    width: max(40%, 600px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-} */
-
 h1{
     font-size: 2rem;
     font-weight: 500;
@@ -184,8 +175,61 @@ a{
     font-size: 0.5rem;
   }
 
-   .back-button-container{
+.back-button-container{
     width: 80%;
+  }
+} 
+
+@media (max-height: 450px) {
+  body {
+    padding: 0.5rem 1rem;
+    justify-content: flex-start;
+  }
+
+  .logo-img {
+    width: 60px;
+    margin-top: 0.2rem;
+  }
+
+  h1 {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  form {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    gap: 5px;
+  }
+
+  form label {
+    height: 36px;
+    width: 36px;
+    font-size: 1rem;
+  }
+
+  form input {
+    height: 36px;
+    font-size: 0.75rem;
+    padding: 0.6em;
+  }
+
+  form button {
+    padding: 0.4em 1.5em;
+    font-size: 0.75rem;
+    margin-top: 5px;
+  }
+
+  .back-button-container {
+    margin-bottom: 5px;
+  }
+
+  .back-button {
+    font-size: 0.75rem;
+  }
+
+  a {
+    font-size: 0.75rem;
   }
 }
 
