@@ -2,6 +2,9 @@ const axios = require('axios');
 const Ev = require('../../../models/evModel');
 const mapController = require('../../../controllers/mapController');
 
+jest.mock('axios');
+jest.mock('../../../models/evModel');
+
 const mockSend = jest.fn();
 const mockJson = jest.fn();
 const mockEnd = jest.fn();
@@ -62,14 +65,14 @@ describe('Map Controller', () => {
 
     it('should return Isochrone with the status code 200 on success', async () => {
       // Arrange
-      jest
-        .spyOn(Ev, 'getEvByModel')
-        .mockResolvedValue({ data: new Ev(testEv), message: null });
-
-      jest.spyOn(axios, 'get').mockResolvedValue(testMap);
+      Ev.getEvByModel.mockResolvedValue({
+        data: new Ev(testEv),
+        message: null,
+      });
+      axios.get.mockResolvedValue({ data: testMap });
 
       // Act
-      const result = await mapController.getIsochrone(mockReq, mockRes);
+      await mapController.getIsochrone(mockReq, mockRes);
 
       // Assert
       expect(Ev.getEvByModel).toHaveBeenCalledTimes(1);
@@ -77,14 +80,14 @@ describe('Map Controller', () => {
       expect(mockStatus).toHaveBeenCalledWith(200);
       expect(mockJson).toHaveBeenCalledWith({
         success: true,
-        data: result,
+        data: testMap,
       });
     });
 
-    it('should return an error if the Ev is not found', async () => {
-      jest
-        .spyOn(Ev, 'getEvByModel')
-        .mockRejectedValue(new Error('Unable to fetch isochrone data'));
+    it('should return an error with status code 404 if the Ev is not found', async () => {
+      Ev.getEvByModel.mockRejectedValue(
+        new Error('Unable to fetch isochrone data')
+      );
 
       await mapController.getIsochrone(mockReq, mockRes);
 
@@ -92,6 +95,38 @@ describe('Map Controller', () => {
       expect(mockStatus).toHaveBeenCalledWith(404);
       expect(mockJson).toHaveBeenCalledWith({
         error: 'Unable to fetch isochrone data',
+      });
+    });
+  });
+
+  describe('getAzureToken', () => {
+    let testToken;
+
+    beforeEach(() => {
+      testToken = 'my-token-123';
+    });
+
+    it('should return valid token with the status code 200 on successful azure authentication', async () => {
+      axios.post.mockResolvedValue({ data: { access_token: testToken } });
+
+      await mapController.getAzureToken(null, mockRes);
+
+      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith({
+        token: testToken,
+      });
+    });
+
+    it('should return an error with status code 500 if the azure authentication fails', async () => {
+      axios.post.mockRejectedValue({ error: 'Failed to get token' });
+
+      await mapController.getAzureToken(null, mockRes);
+
+      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(500);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Failed to get token',
       });
     });
   });

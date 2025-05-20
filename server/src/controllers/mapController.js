@@ -1,9 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
-
 const Ev = require('../models/evModel');
-
-const subscriptionKey = process.env.AZURE_SUBKEY;
 
 async function getAzureToken(req, res) {
   const {
@@ -24,16 +21,15 @@ async function getAzureToken(req, res) {
       }),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
-
-    console.log('TOKEN: ', tokenResponse.data.access_token);
     res.status(200).json({ token: tokenResponse.data.access_token });
   } catch (err) {
-    console.log('ERROR: ', err);
-    res.status(500).json({ error: 'Failed to get token ' });
+    res.status(500).json({ error: 'Failed to get token' });
   }
 }
 
 async function getIsochrone(req, res) {
+  const { AZURE_SUBKEY, AZURE_BASE_URL } = process.env;
+
   const {
     model,
     lat,
@@ -62,17 +58,14 @@ async function getIsochrone(req, res) {
       'api-version': '1.0',
       query: `${lat},${lon}`,
       distanceBudgetInMeters,
-      'subscription-key': subscriptionKey,
+      'subscription-key': AZURE_SUBKEY,
       vehicleMaxSpeed: top_speed_kmh,
       traffic: true,
     };
 
-    const response = await axios.get(
-      `${process.env.AZURE_BASE_URL}/route/range/json`,
-      {
-        params,
-      }
-    );
+    const response = await axios.get(`${AZURE_BASE_URL}/route/range/json`, {
+      params,
+    });
     res.status(200).json({ success: true, data: response.data });
   } catch (err) {
     res.status(404).json({ error: 'Unable to fetch isochrone data' });
