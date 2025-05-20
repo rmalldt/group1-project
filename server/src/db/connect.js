@@ -32,3 +32,4 @@ function setDb() {
 setDb();
 
 module.exports = db;
+module.exports.setDb = setDb;

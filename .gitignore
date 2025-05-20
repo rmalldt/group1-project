@@ -16,3 +16,4 @@ terraform/config.md
 
 # kubernetes 
 configuration/kubernetes/api-configmap.yml
+cypress/screenshots
