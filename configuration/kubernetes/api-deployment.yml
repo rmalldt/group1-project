@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rangeiq
+    microservice: api
+  name: api
+  namespace: default
+spec:
+  replicas: 2
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: rangeiq
+      microservice: api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: rangeiq
+        microservice: api
+    spec:
+      nodeSelector:
+        service: api
+      containers:
+        - name: api
+          image: rmall67/rangeiq-api:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: api-configmap
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rangeiq
+    microservice: api
+  name: api-lb
+  namespace: default
+spec:
+  selector:
+    app: rangeiq
+    microservice: api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  sessionAffinity: None
+  type: LoadBalancer
