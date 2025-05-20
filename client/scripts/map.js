@@ -116,9 +116,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (!userSelectedModel) {
       console.error('No car model selected. Please select a car model.');
-      window.location.replace(
-        '/group1-project/client/views/select-vehicle.html'
-      );
+      window.location.replace('/client/views/select-vehicle.html');
     }
 
     let batteryCharge = 1;
