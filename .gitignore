@@ -16,3 +16,6 @@ terraform/config.md
 
 # kubernetes 
 configuration/kubernetes/api-configmap.yml
+
+# cypress
+cypress/screenshots/my-image.png
