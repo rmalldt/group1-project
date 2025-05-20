@@ -86,7 +86,7 @@ class User {
   async destroy(data) {
     const response = await db.query(
       'DELETE FROM users WHERE id = $1 RETURNING *;',
-      [data.id]
+      [this.id]
     );
     if (response.rows.length != 1) {
       throw new Error('Unable to delete user.');

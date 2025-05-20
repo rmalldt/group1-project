@@ -8,223 +8,170 @@ describe('User Model', () => {
     jest.clearAllMocks();
   });
 
-  describe('getAll', () => {
-    it('should return all users as User instances', async () => {
-      const mockUsers = [
-        {
-          id: 1,
-          username: 'alice',
-          email: 'alice@example.com',
-          password: 'hashed123',
-          start_location: '120',
-          isAdmin: false,
-          journeys: [],
-        },
-        {
-          id: 2,
-          username: 'bob',
-          email: 'bob@example.com',
-          password: 'hashed456',
-          start_location: '200',
-          isAdmin: true,
-          journeys: [],
-        },
-      ];
+  const mockUser = {
+    id: 1,
+    username: 'testuser',
+    email: 'testuser@example.com',
+    password: 'hashedpassword',
+    start_location: '100',
+    isAdmin: false,
+    journeys: [],
+  };
 
-      db.query.mockResolvedValueOnce({ rows: mockUsers });
+  describe('Static Methods', () => {
+    describe('getAll', () => {
+      it('should return all users as User instances', async () => {
+        const mockUsers = [mockUser, { ...mockUser, id: 2, username: 'bob' }];
+        db.query.mockResolvedValueOnce({ rows: mockUsers });
 
-      const result = await User.getAll();
+        const result = await User.getAll();
 
-      expect(result).toHaveLength(2);
-      expect(result[0]).toBeInstanceOf(User);
-      expect(result[0].username).toBe('alice');
-      expect(result[1].isAdmin).toBe(true);
-      expect(db.query).toHaveBeenCalledWith('SELECT * FROM users;');
-    });
-
-    it('should throw an error if no users are found', async () => {
-      db.query.mockResolvedValueOnce({ rows: [] });
-
-      await expect(User.getAll()).rejects.toThrow('No users available.');
-    });
-  });
-
-  describe('getOneById', () => {
-    it('should return a user when a valid ID is passed', async () => {
-      const mockUser = {
-        id: 1,
-        username: 'alice',
-        email: 'alice@example.com',
-        password: 'hashed123',
-        start_location: '120',
-        isAdmin: false,
-        journeys: [],
-      };
-
-      db.query.mockResolvedValueOnce({ rows: [mockUser] });
-
-      const result = await User.getOneById(1);
-
-      expect(result).toBeInstanceOf(User);
-      expect(result.id).toBe(1);
-      expect(result.username).toBe('alice');
-      expect(db.query).toHaveBeenCalledWith(
-        'SELECT * FROM users WHERE id = $1;',
-        [1]
-      );
-    });
-
-    it('should throw an error if user not found', async () => {
-      db.query.mockResolvedValueOnce({ rows: [] });
-
-      await expect(User.getOneById(999)).rejects.toThrow(
-        'Unable to locate user.'
-      );
-    });
-  });
-
-  describe('create', () => {
-    it('should create a new user and return it', async () => {
-      const inputData = {
-        username: 'charlie',
-        email: 'charlie@example.com',
-        password: 'securePass',
-      };
-
-      const insertResponse = {
-        id: 10,
-        username: 'charlie',
-        email: 'charlie@example.com',
-        password: 'securePass',
-        start_location: '10',
-        isAdmin: false,
-        journeys: [],
-      };
-
-      const fetchResponse = {
-        id: 10,
-        username: 'charlie',
-        email: 'charlie@example.com',
-        password: 'securePass',
-        start_location: '10',
-        isAdmin: false,
-        journeys: [],
-      };
-
-      db.query
-        .mockResolvedValueOnce({ rows: [insertResponse] }) // insert
-        .mockResolvedValueOnce({ rows: [fetchResponse] }); // getOneById
-
-      const result = await User.create(inputData);
-
-      expect(result).toBeInstanceOf(User);
-      expect(result.username).toBe('charlie');
-      expect(result.id).toBe(10);
-      expect(db.query).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('update', () => {
-    it('should update the user fields and return updated User instance', async () => {
-      const initialUser = new User({
-        id: 5,
-        username: 'delta',
-        email: 'delta@web.com',
-        password: 'init',
-        start_location: '50',
-        isAdmin: false,
-        journeys: [],
+        expect(result).toHaveLength(2);
+        expect(result[0]).toBeInstanceOf(User);
+        expect(result[0].username).toBe('testuser');
+        expect(result[1].username).toBe('bob');
+        expect(db.query).toHaveBeenCalledWith('SELECT * FROM users;');
       });
 
-      const updatedRow = {
-        id: 5,
-        username: 'delta_new',
-        email: 'delta_new@web.com',
-        password: 'updatedpass',
-        start_location: '100',
-        isAdmin: true,
-        journeys: [],
-      };
-
-      db.query.mockResolvedValueOnce({ rows: [updatedRow] });
-
-      const result = await initialUser.update({
-        username: 'delta_new',
-        email: 'delta_new@web.com',
-        password: 'updatedpass',
-        start_location: '100',
-        isAdmin: true,
+      it('should throw an error if no users are found', async () => {
+        db.query.mockResolvedValueOnce({ rows: [] });
+        await expect(User.getAll()).rejects.toThrow('No users available.');
       });
-
-      expect(result).toBeInstanceOf(User);
-      expect(result.username).toBe('delta_new');
-      expect(result.start_location).toBe('100');
-      expect(db.query).toHaveBeenCalledWith(
-        expect.stringContaining('UPDATE users'),
-        ['delta_new', 'delta_new@web.com', 'updatedpass', '100', true, 5]
-      );
     });
 
-    it('should throw an error if update fails', async () => {
-      const user = new User({
-        id: 3,
-        username: 'erroruser',
-        email: 'fail@web.com',
-        password: 'pass',
-        start_location: '10',
-        isAdmin: false,
-        journeys: [],
+    describe('getOneById', () => {
+      it('should return a user when a valid ID is passed', async () => {
+        db.query.mockResolvedValueOnce({ rows: [mockUser] });
+
+        const result = await User.getOneById(1);
+
+        expect(result).toBeInstanceOf(User);
+        expect(result.id).toBe(1);
+        expect(result.username).toBe('testuser');
+        expect(db.query).toHaveBeenCalledWith('SELECT * FROM users WHERE id = $1;', [1]);
       });
 
-      db.query.mockResolvedValueOnce({ rows: [] });
+      it('should throw an error if user not found', async () => {
+        db.query.mockResolvedValueOnce({ rows: [] });
+        await expect(User.getOneById(999)).rejects.toThrow('Unable to locate user.');
+      });
+    });
 
-      await expect(user.update({ username: 'fail_update' })).rejects.toThrow(
-        'Unable to update user.'
-      );
+    describe('getOneByUsername', () => {
+      it('should return a user when a valid username is passed', async () => {
+        db.query.mockResolvedValueOnce({ rows: [mockUser] });
+
+        const result = await User.getOneByUsername('testuser');
+
+        expect(result).toBeInstanceOf(User);
+        expect(result.username).toBe('testuser');
+        expect(db.query).toHaveBeenCalledWith('SELECT * FROM users WHERE username = $1', ['testuser']);
+      });
+
+      it('should throw an error if the user is not found', async () => {
+        db.query.mockResolvedValueOnce({ rows: [] });
+        await expect(User.getOneByUsername('nonexistent')).rejects.toThrow('Unable to locate user.');
+      });
+    });
+
+    describe('create', () => {
+      it('should create a new user and return it', async () => {
+        const inputData = { username: 'newuser', email: 'newuser@example.com', password: 'securepassword' };
+        const mockResponse = { ...mockUser, id: 3, username: 'newuser' };
+
+        db.query
+          .mockResolvedValueOnce({ rows: [mockResponse] }) // insert
+          .mockResolvedValueOnce({ rows: [mockResponse] }); // getOneById
+
+        const result = await User.create(inputData);
+
+        expect(result).toBeInstanceOf(User);
+        expect(result.username).toBe('newuser');
+        expect(result.id).toBe(3);
+        expect(db.query).toHaveBeenCalledTimes(2);
+      });
+
+      it('should throw an error if the user cannot be created', async () => {
+        db.query.mockResolvedValueOnce({ rows: [] });
+        const inputData = { username: 'failuser', email: 'failuser@example.com', password: 'failpassword' };
+
+        await expect(User.create(inputData)).rejects.toThrow();
+      });
     });
   });
 
-  describe('destroy', () => {
-    it('should delete a user and return the deleted user instance', async () => {
-      const mockUser = {
-        id: 6,
-        username: 'to_delete',
-        email: 'bye@web.com',
-        password: 'pass',
-        start_location: '20',
-        isAdmin: false,
-        journeys: [],
-      };
+  describe('Instance Methods', () => {
+    describe('update', () => {
+      it('should update the user fields and return updated User instance', async () => {
+        const user = new User(mockUser);
+        const updatedData = { ...mockUser, username: 'updateduser', start_location: '200' };
 
-      db.query.mockResolvedValueOnce({ rows: [mockUser] });
+        db.query.mockResolvedValueOnce({ rows: [updatedData] });
 
+        const result = await user.update({ username: 'updateduser', start_location: '200' });
+
+        expect(result).toBeInstanceOf(User);
+        expect(result.username).toBe('updateduser');
+        expect(result.start_location).toBe('200');
+        expect(db.query).toHaveBeenCalledWith(
+          expect.stringContaining('UPDATE users'),
+          expect.arrayContaining(['updateduser', '200', 1])
+        );
+      });
+
+      it('should throw an error if update fails', async () => {
+        const user = new User(mockUser);
+        db.query.mockResolvedValueOnce({ rows: [] });
+
+        await expect(user.update({ username: 'fail' })).rejects.toThrow('Unable to update user.');
+      });
+    });
+
+    describe('destroy', () => {
+      it('should delete a user and return the deleted user instance', async () => {
+        db.query.mockResolvedValueOnce({ rows: [mockUser] });
+
+        const user = new User(mockUser);
+        const result = await user.destroy();
+
+        expect(result).toBeInstanceOf(User);
+        expect(result.id).toBe(1);
+        expect(db.query).toHaveBeenCalledWith('DELETE FROM users WHERE id = $1 RETURNING *;', [1]);
+      });
+
+      it('should throw an error if the user cannot be deleted', async () => {
+        db.query.mockResolvedValueOnce({ rows: [] });
+
+        const user = new User(mockUser);
+        await expect(user.destroy()).rejects.toThrow('Unable to delete user.');
+      });
+    });
+  });
+
+  describe('Constructor', () => {
+    it('should correctly initialize a User instance with provided properties', () => {
       const user = new User(mockUser);
-      const result = await user.destroy({ id: 6 });
 
-      expect(result).toBeInstanceOf(User);
-      expect(result.id).toBe(6);
-      expect(db.query).toHaveBeenCalledWith(
-        'DELETE FROM users WHERE id = $1 RETURNING *;',
-        [6]
-      );
+      expect(user.id).toBe(1);
+      expect(user.username).toBe('testuser');
+      expect(user.email).toBe('testuser@example.com');
+      expect(user.password).toBe('hashedpassword');
+      expect(user.start_location).toBe('100');
+      expect(user.isAdmin).toBe(false);
+      expect(user.journeys).toEqual([]);
     });
 
-    it('should throw an error if the user cannot be deleted', async () => {
-      db.query.mockResolvedValueOnce({ rows: [] });
+    it('should handle missing optional properties gracefully', () => {
+      const minimalUser = { id: 2, username: 'minimaluser', email: 'minimal@example.com', password: 'minimalpass' };
+      const user = new User(minimalUser);
 
-      const user = new User({
-        id: 6,
-        username: 'ghost',
-        email: 'ghost@web.com',
-        password: 'nope',
-        start_location: '40',
-        isAdmin: false,
-        journeys: [],
-      });
-
-      await expect(user.destroy({ id: 6 })).rejects.toThrow(
-        'Unable to delete user.'
-      );
+      expect(user.id).toBe(2);
+      expect(user.username).toBe('minimaluser');
+      expect(user.email).toBe('minimal@example.com');
+      expect(user.password).toBe('minimalpass');
+      expect(user.start_location).toBeUndefined();
+      expect(user.isAdmin).toBeUndefined();
+      expect(user.journeys).toEqual([]);
     });
   });
 });

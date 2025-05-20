@@ -48,13 +48,12 @@ describe('Full user registration and login journey, landing page to select vehic
     cy.url().should('include', '/select-vehicle.html', { timeout: 10000 });
     
     // Additional verification that we're on the vehicle selection page
-    // This depends on what elements are expected on this page
     cy.contains('Select Your Vehicle').should('be.visible');
   });
 
   it('should allow a user to select a vehicle and navigate to the map page', () => {
     // Start directly at the vehicle selection page
-    // In a real test, you might want to use a beforeEach hook to log in before this test
+    // We might want to use a beforeEach hook to log in before this test
     cy.visit('http://localhost:5500/group1-project/client/views/select-vehicle.html');
     
     // Make sure the dropdown is visible
@@ -67,7 +66,6 @@ describe('Full user registration and login journey, landing page to select vehic
     cy.get('#vehicle-dropdown').should('have.value', 'Model 3 Standard Range Plus');
     
     // Submit the vehicle selection form
-    // Using a more generic approach since the exact submit button selector wasn't specified
     cy.get('#vehicle-selection-button').click();
     // Alternative approach: cy.get('form').submit();
     
@@ -75,7 +73,6 @@ describe('Full user registration and login journey, landing page to select vehic
     cy.url().should('include', '/map.html', { timeout: 10000 });
     
     // Wait for the map to load
-    // The exact selector might need adjustment based on how the map initializes
     cy.get('#myMap', { timeout: 15000 }).should('be.visible');
     
     // Check for the back button
@@ -110,10 +107,7 @@ describe('Full user registration and login journey, landing page to select vehic
     
     // Verify the drawer can be closed
     cy.get('#toggleDrawer').click();
-    // Check if drawer is collapsed - this may need adjustment based on your CSS implementation
-    // For example, if you have a "drawer-closed" class or if the drawer moves off-screen
-    cy.wait(500); // Wait for animation if there is one
-    // This assertion depends on how your drawer closes - might need adjustment
+    cy.wait(500); // Wait for animation
     cy.get('#drawer').should('not.be.visible');
   });
   
