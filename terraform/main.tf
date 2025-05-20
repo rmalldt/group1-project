@@ -17,6 +17,7 @@ provider "aws" {
 
 data "aws_availability_zones" "azs" {}
 
+# Create VPC
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -35,6 +36,7 @@ module "vpc" {
   map_public_ip_on_launch = true
 }
 
+# Create EKS
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.2"
