@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:wght@300;400;500;600;700&display=swap');
- 
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
 :root {
     --accent-color: #64b4f6;
     --base-color: white;
@@ -18,13 +26,13 @@
  
 html {
     box-sizing: border-box;
-    font-family: Fredoka, 'Segoe UI', sans-serif;
+    font-family: Fredoka, 'Segoe UI', sans-serif ;
     color: var(--text-color);
     text-align: center;
 }
  
 body {
-    min-height: 100dvh;
+    min-height: 100vh;
     font-weight: 300;
     line-height: 1.8;
     -webkit-font-smoothing: antialiased;
@@ -136,7 +144,6 @@ h1 {
     border: none;
     background-color: transparent;
     font: inherit;
-    font-weight: 500;
     cursor: pointer;
 }
  
@@ -147,6 +154,7 @@ h1 {
 /* Resspponsive laayout */
 @media (max-width: 500px) {
     body {
+        /* width: 91%; */
         padding: 0 1rem;
     }
 }

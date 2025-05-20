@@ -154,8 +154,6 @@ form button:hover{
   color: var(--accent-color);
 }
 
-
-
 a{
     text-decoration: none;
     color: var(--accent-color);
@@ -171,6 +169,23 @@ a{
 @media (max-width: 500px) {
   body {
     padding: 0 1rem;
+  }
+      form {
+    width: 80%;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    gap: 8px;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    font-size: 0.5rem;
+  }
+
+   .back-button-container{
+    width: 80%;
   }
 }
 

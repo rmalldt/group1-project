@@ -76,6 +76,8 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
       weatherConditionDifferential,
       passengerDifferential
     );
+    
+    drawer.classList.remove("open");
 });
 
   // let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
