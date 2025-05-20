@@ -51,11 +51,12 @@ module "eks" {
 
   eks_managed_node_groups = {
     api_nodes = {
-      desired_size   = 2
-      max_size       = 2
-      min_size       = 1
-      instance_types = ["t3.medium"] # update this from t2.micro
-      subnet_ids     = module.vpc.public_subnets
+      desired_size      = 2
+      max_size          = 2
+      min_size          = 1
+      instance_types    = ["t3.medium"] # updated this from t2.micro
+      subnet_ids        = module.vpc.public_subnets
+      security_group_id = aws_security_group.api_service.id
 
       labels = {
         service = "api"
@@ -63,11 +64,12 @@ module "eks" {
     }
 
     db_nodes = {
-      desired_size   = 1
-      max_size       = 1
-      min_size       = 1
-      instance_types = ["t2.micro"]
-      subnet_ids     = module.vpc.private_subnets
+      desired_size      = 1
+      max_size          = 1
+      min_size          = 1
+      instance_types    = ["t2.micro"]
+      subnet_ids        = module.vpc.private_subnets
+      security_group_id = aws_security_group.database_service.id
 
       labels = {
         service = "database"
