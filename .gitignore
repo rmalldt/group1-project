@@ -13,3 +13,6 @@ terraform/.terraform.lock.hcl
 terraform/config.md
 *.tfstate
 *.tfstate.backup
+
+# kubernetes 
+#configuration/kubernetes/api-configmap.yml
