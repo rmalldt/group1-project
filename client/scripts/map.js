@@ -1,17 +1,3 @@
-import { getVehicleStats } from "./vehicleStats.js";
-
-async function getUserPostcode(userId) {
-  try {
-    const response = await fetch(`http://localhost:3000/users/${userId}`);
-      const resData = await response.json();
-      const postcode = resData.data.start_location;
-      console.log('User postcode:', postcode);
-      return postcode;
-  } catch (error) {
-    console.log('Invalid postcode');
-  }
-}
-
 async function postCodeToLatLng(postcode) {
   let latlng;
   try {
@@ -23,60 +9,58 @@ async function postCodeToLatLng(postcode) {
       latitude: resData.result.latitude,
       longitude: resData.result.longitude,
     };
-    console.log(resData.result);
-    return latlng
+    return latlng;
   } catch (error) {
     console.log('Invalid postcode');
   }
 }
 
-
-// Global map object
+// Global map objects
 let map;
 let dataSource;
 let polygonLayer;
 
 document.addEventListener('DOMContentLoaded', async function () {
+  const drawer = document.getElementById('drawer');
+  const toggleBtn = document.getElementById('toggleDrawer');
 
-const subscriptionKey = 'FCwsnU80SGrtrUAFyWQ9HaqMRW7oE2nUrD2c7UWOtsz6L0YnVUcsJQQJ99BEAC5RqLJFfRFaAAAgAZMPGcrp';
-// We need to abstract this away from the source code
+  toggleBtn.addEventListener('click', () => {
+    drawer.classList.toggle('open');
+  });
 
-const drawer = document.getElementById("drawer");
-const toggleBtn = document.getElementById("toggleDrawer");
+  document
+    .getElementById('settingsForm')
+    .addEventListener('submit', async e => {
+      e.preventDefault();
 
-  toggleBtn.addEventListener("click", () => {
-  drawer.classList.toggle("open");
-});
+      let postcode = document.getElementById('postcode-input').value.trim();
+      let batteryCharge = parseFloat(document.getElementById('battery').value);
+      let passengerDifferential = parseFloat(
+        document.getElementById('passengers').value
+      );
+      let weatherConditionDifferential =
+        document.getElementById('weather').value;
 
-document.getElementById('settingsForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
- 
-  let postcode = document.getElementById('postcode-input').value.trim();
-  let batteryCharge = parseFloat(document.getElementById('battery').value);
-  let passengerDifferential = parseFloat(document.getElementById('passengers').value);
-  let weatherConditionDifferential = document.getElementById('weather').value;
+      console.log('Form Submitted:');
+      console.log('Postcode:', postcode);
+      console.log('Battery:', batteryCharge);
+      console.log('Passengers:', passengerDifferential);
+      console.log('Weather:', weatherConditionDifferential);
 
-  console.log("Form Submitted:");
-  console.log("Postcode:", postcode);
-  console.log("Battery:", batteryCharge);
-  console.log("Passengers:", passengerDifferential);
-  console.log("Weather:", weatherConditionDifferential);
+      let newCoords = await postCodeToLatLng(postcode);
+      console.log('NEW COORDS: ', newCoords);
+      originLat = newCoords.latitude;
+      originLon = newCoords.longitude;
 
-  let newCoords = await postCodeToLatLng(postcode);
-    console.log('NEW COORDS: ', newCoords);
-    originLat = newCoords.latitude;
-    originLon = newCoords.longitude;
- 
-  await fetchIsochrone(
-      userSelectedModel,
-      originLat,
-      originLon,
-      subscriptionKey,
-      batteryCharge,
-      weatherConditionDifferential,
-      passengerDifferential
-    );
-});
+      await fetchIsochrone(
+        userSelectedModel,
+        originLat,
+        originLon,
+        batteryCharge,
+        weatherConditionDifferential,
+        passengerDifferential
+      );
+    });
 
   // let postcode = 'S1 1AA'; // This should be replaced with the user's postcode from the database
 
@@ -96,21 +80,28 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
   console.log('Starting coordinates:', originLat, originLon);
 
   let userSelectedModel = localStorage.getItem('carModel');
-  console.log('User selected model:', userSelectedModel)
+  console.log('User selected model:', userSelectedModel);
 
-// ------------------------
+  // ------------------------
 
   // Initialise the map
   map = new atlas.Map('myMap', {
     center: [originLon, originLat],
     zoom: 5,
     authOptions: {
-      authType: 'subscriptionKey',
-      subscriptionKey: subscriptionKey,
+      authType: 'anonymous',
+      clientId: 'e9a2d010-67fb-4471-831f-a7adcc434fb8',
+      getToken: function (resolve, reject, map) {
+        fetch('http://localhost:3000/maps/azure-token')
+          .then(res => res.json())
+          .then(data => resolve(data.token))
+          .catch(err => reject(err));
+      },
     },
   });
 
   map.events.add('ready', async () => {
+    console.log('READY:');
     dataSource = new atlas.source.DataSource();
     map.sources.add(dataSource);
 
@@ -125,71 +116,65 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
 
     if (!userSelectedModel) {
       console.error('No car model selected. Please select a car model.');
-      window.location.replace('/group1-project/client/views/select-vehicle.html');
+      window.location.replace('/client/views/select-vehicle.html');
     }
 
-    let batteryCharge = 1
-    let weatherConditionDifferential = 1
-    let passengerDifferential = 1 // initial map renders with these variable values
+    let batteryCharge = 1;
+    let weatherConditionDifferential = 1;
+    let passengerDifferential = 1; // initial map renders with these variable values
 
-    fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential);
+    fetchIsochrone(
+      userSelectedModel,
+      originLat,
+      originLon,
+      batteryCharge,
+      weatherConditionDifferential,
+      passengerDifferential
+    );
   });
 });
 
 // ------------------
 
-async function fetchIsochrone(userSelectedModel, originLat, originLon, subscriptionKey, batteryCharge, weatherConditionDifferential, passengerDifferential) {
-  const {
-    // battery_capacity_kwh,
-    // brand,
-    combined_wltp_range_km,
-    // efficiency_kmkwh,
-    // ev_car_image,
-    // ev_id,
-    // fast_charge_kmh,
-    // model,
-    // plug_type,
-    // powertrain,
-    // rapid_charge,
-    top_speed_kmh
-  } = await getVehicleStats(userSelectedModel)
-
-  const isoUrl =
-    `https://atlas.microsoft.com/route/range/json` +
-    `?api-version=1.0` +
-    `&query=${originLat},${originLon}` +
-    `&distanceBudgetInMeters=${combined_wltp_range_km * 1000 * batteryCharge * weatherConditionDifferential * passengerDifferential}` + // under WLTP ideal conditions
-    `&subscription-key=${subscriptionKey}` +
-    `&vehicleMaxSpeed=${top_speed_kmh}` +
-    `&traffic=true`;
+async function fetchIsochrone(
+  userSelectedModel,
+  originLat,
+  originLon,
+  batteryCharge,
+  weatherConditionDifferential,
+  passengerDifferential
+) {
+  const isoUrl = `http://localhost:3000/maps/isochrone?model=${userSelectedModel}&lat=${originLat}&lon=${originLon}&batteryCharge=${batteryCharge}&weatherConditionDifferential=${weatherConditionDifferential}&passengerDifferential=${passengerDifferential}`;
 
   console.log('Isochrone URL to pass to Azure API:', isoUrl);
 
-  fetch(isoUrl)
-    .then(response => response.json())
-    .then(result => {
-      // Convert boundary points to [lon, lat] pairs
-      const boundaryCoords = result.reachableRange.boundary.map(pt => [
-        pt.longitude,
-        pt.latitude,
-      ]);
-      console.log('Boundary coordinates:', boundaryCoords);
+  try {
+    const response = await fetch(isoUrl);
+    const resData = await response.json();
+    if (!resData.success) {
+      throw new Error('Unable to fetch isochrone');
+    }
 
-      // Ideally we would find a way to double the number of points in the boundary to make the polygon
-      // smoother, which we would need to do after the fetch(isoUrl) call. Can we write a function that
-      // takes the mean between each set of two points and add them as elements to the boundaryCoords array?
+    const boundaryCoords = resData.data.reachableRange.boundary.map(pt => [
+      pt.longitude,
+      pt.latitude,
+    ]);
+    console.log('Boundary coordinates:', boundaryCoords);
 
-      // Create a GeoJSON Polygon from the boundary
-      const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
+    // Ideally we would find a way to double the number of points in the boundary to make the polygon
+    // smoother, which we would need to do after the fetch(isoUrl) call. Can we write a function that
+    // takes the mean between each set of two points and add them as elements to the boundaryCoords array?
+    // Create a GeoJSON Polygon from the boundary
+    const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
+    dataSource.clear();
+    dataSource.add(isochronePolygon);
 
-      dataSource.clear();
-      dataSource.add(isochronePolygon);
+    // Add a PolygonLayer to style the fill and outline
+    map.layers.add(polygonLayer);
 
-      // Add a PolygonLayer to style the fill and outline
-      map.layers.add(polygonLayer);
-
-      // Zoom the map to the polygon bounds
-      map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
-    })
-    .catch(console.error);
+    // Zoom the map to the polygon bounds
+    map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
+  } catch (err) {
+    console.error('Error: ', err);
   }
+}
