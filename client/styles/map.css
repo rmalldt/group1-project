@@ -269,14 +269,17 @@ button[type="submit"] {
 /* Page background & text */
 body.darkmode--activated {
   background-color: var(--base-color);
-  color: var(--text-color);
+  color: #e2e4cd;
 }
+
+
 
 /* Inputs and dropdowns */
 body.darkmode--activated select,
 body.darkmode--activated input {
   background-color: var(--input-color);
-  color: var(--text-color);
+  /* color: var(--text-color); */
+    color: #e2e4cd;
   border: 2px solid var(--accent-color);
 }
 
@@ -294,7 +297,8 @@ body.darkmode--activated #toggleDrawer,
 body.darkmode--activated #backButton {
   background-color: #100f2c !important;
   /* force dark purple */
-  color: #f5f5f5;
+  /* color: #f5f5f5; */
+    color: #e2e4cd;
   /* light text for contrast */
   border: none;
 }

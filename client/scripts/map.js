@@ -173,6 +173,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     );
   });
 
+
+  // Raf added: Dark mode toggle
     const darkToggleBtn = document.getElementById('darkModeToggle');
   darkToggleBtn.addEventListener('click', (e) => {
     e.preventDefault();
