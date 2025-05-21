@@ -20,5 +20,11 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+  "testEnvironment": "jsdom",
+  "testPathIgnorePatterns": [
+      "./__tests__/helpers.js"
+    ]
   }
 }
