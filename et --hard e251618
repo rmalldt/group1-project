@@ -1,0 +1,22 @@
+[33m9766056[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32momega[m[33m, [m[1;31morigin/omega[m[33m)[m HEAD@{0}: reset: moving to origin/omega
+[33m4947397[m HEAD@{1}: commit: styling of dark mode on the pages
+[33me251618[m HEAD@{2}: pull --no-rebase origin development: Merge made by the 'ort' strategy.
+[33m9766056[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32momega[m[33m, [m[1;31morigin/omega[m[33m)[m HEAD@{3}: reset: moving to HEAD
+[33m9766056[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32momega[m[33m, [m[1;31morigin/omega[m[33m)[m HEAD@{4}: checkout: moving from domtesting to omega
+[33m124bc0c[m[33m ([m[1;31morigin/domtesting[m[33m, [m[1;32mdomtesting[m[33m)[m HEAD@{5}: checkout: moving from omega to domtesting
+[33m9766056[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32momega[m[33m, [m[1;31morigin/omega[m[33m)[m HEAD@{6}: commit: Updated map styles and views for dark mode + added new EV icon
+[33mf0b5d03[m HEAD@{7}: commit: dakr mode button added to sign in, sign up, and select vehicle pages
+[33me4abde7[m[33m ([m[1;31morigin/consistency[m[33m, [m[1;32mconsistency[m[33m)[m HEAD@{8}: reset: moving to origin/consistency
+[33mf3167bf[m[33m ([m[1;32mdevelopment[m[33m)[m HEAD@{9}: checkout: moving from consistency to omega
+[33me4abde7[m[33m ([m[1;31morigin/consistency[m[33m, [m[1;32mconsistency[m[33m)[m HEAD@{10}: checkout: moving from domtesting to consistency
+[33m124bc0c[m[33m ([m[1;31morigin/domtesting[m[33m, [m[1;32mdomtesting[m[33m)[m HEAD@{11}: checkout: moving from consistency to domtesting
+[33me4abde7[m[33m ([m[1;31morigin/consistency[m[33m, [m[1;32mconsistency[m[33m)[m HEAD@{12}: checkout: moving from omega to consistency
+[33mf3167bf[m[33m ([m[1;32mdevelopment[m[33m)[m HEAD@{13}: checkout: moving from domtesting to omega
+[33m124bc0c[m[33m ([m[1;31morigin/domtesting[m[33m, [m[1;32mdomtesting[m[33m)[m HEAD@{14}: checkout: moving from development to domtesting
+[33mf3167bf[m[33m ([m[1;32mdevelopment[m[33m)[m HEAD@{15}: checkout: moving from cypress to development
+[33m730237b[m[33m ([m[1;31morigin/cypress[m[33m, [m[1;32mcypress[m[33m)[m HEAD@{16}: checkout: moving from isochrone to cypress
+[33mea473ce[m[33m ([m[1;32mvehicle-integration-testing[m[33m, [m[1;32mstyle/select-vehicle-fix[m[33m, [m[1;32mselectVehicleDebug[m[33m, [m[1;32misochrone[m[33m)[m HEAD@{17}: checkout: moving from domtesting to isochrone
+[33m124bc0c[m[33m ([m[1;31morigin/domtesting[m[33m, [m[1;32mdomtesting[m[33m)[m HEAD@{18}: checkout: moving from omega to domtesting
+[33mf3167bf[m[33m ([m[1;32mdevelopment[m[33m)[m HEAD@{19}: checkout: moving from development to omega
+[33mf3167bf[m[33m ([m[1;32mdevelopment[m[33m)[m HEAD@{20}: checkout: moving from domtesting to development
+[33m124bc0c[m[33m ([m[1;31morigin/domtesting[m[33m, [m[1;32mdomtesting[m[33m)[m HEAD@{21}: merge development: Merge made by the 'ort' strategy.
