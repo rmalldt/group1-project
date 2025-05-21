@@ -112,9 +112,7 @@ describe('Ev Controller', () => {
         .spyOn(Ev, 'getEvByModel')
         .mockResolvedValue({ data: new Ev(testEv), message: null });
 
-      const test = await evController.getEvByModel(mockReq, mockRes);
-
-      console.log('TEST: ', test);
+      await evController.getEvByModel(mockReq, mockRes);
 
       expect(Ev.getEvByModel).toHaveBeenCalledTimes(1);
       expect(mockStatus).toHaveBeenCalledWith(200);
