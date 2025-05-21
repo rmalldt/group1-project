@@ -3,6 +3,7 @@ const cors = require('cors');
 const logger = require('./middleware/logger');
 const userRouter = require('./routes/userRoutes');
 const evRouter = require('./routes/evRoutes');
+const mapRouter = require('./routes/mapRoutes');
 
 const api = express();
 
@@ -20,6 +21,7 @@ api.get('/', (req, res) => {
 
 api.use('/users', userRouter);
 api.use('/evs', evRouter);
+api.use('/maps', mapRouter);
 
 api.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
