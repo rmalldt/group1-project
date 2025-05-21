@@ -55,5 +55,25 @@
  
       </form>
       <p>Already registered? <a href="./signin.html">Sign in</a></p>
+
+              <script src="https://unpkg.com/darkmode-js@1.3.4/lib/darkmode-js.js"></script>
+              <script>
+                const options = {
+                  bottom: '32px', // default: '32px'
+                  right: '32px',  // default: '32px'
+                  left: 'unset',  // default: 'unset'
+                  time: '0.5s',   // default: '0.3s'
+                  mixColor: '#fff',
+                  backgroundColor: '#fff',  // default: '#fff'
+                  buttonColorDark: '#100f2c',  // default: '#100f2c'
+                  buttonColorLight: '#fff',    // default: '#fff'
+                  saveInCookies: true,
+                  label: '🌓',
+                  autoMatchOsTheme: true
+                }
+
+                const darkmode = new Darkmode(options);
+                darkmode.showWidget();
+              </script>
 </body>
 </html>
