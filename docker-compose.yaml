@@ -1,29 +1,37 @@
 version: '3.9'
 services:
   client:
-    image: 
+    image: cnaylor11/range-iq-client:0.0.1
     ports:
-      - "8080:80"
+      - "80:80"
     restart: always
+    depends_on:
+      - server
+      - db
     networks:
       - rangeiq-prod
+    pull_policy: always
 
   server:
-    image: 
+    image: cnaylor11/range-iq-api:0.0.1
     ports:
       - "80:3000"
     restart: always
+    depends_on:
+      - db
     networks:
       - rangeiq-prod
+    pull_policy: always
 
   db:
-    image: 
+    image: cnaylor11/range-iq-db:0.0.1
     ports:
       - "5432:5432"
     restart: always
     networks:
       - rangeiq-prod
+    pull_policy: always
 
 
-  networks:
-    rangeiq-prod:
+networks:
+  rangeiq-prod:

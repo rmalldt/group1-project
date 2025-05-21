@@ -7,33 +7,17 @@
       yum:
         name: '*'
         state: latest
-      become: true
 
     - name: Install Docker
       yum:
         name: docker
         state: present
-      become: true
 
     - name: Start Docker service
       service:
         name: docker
         state: started
         enabled: yes
-      become: true
-
-    - name: Install Git
-      yum:
-        name: git
-        state: present
-
-    - name: Clone repo into ec2-user home
-      git:
-        repo: "{{project_repo}}"
-        dest: /home/ec2-user/{{repo_name}}
-        version: main
-        force: yes
-        update: yes
 
     - name: Add ec2-user to docker group
       user:
@@ -47,10 +31,33 @@
         chmod +x /usr/local/bin/docker-compose
       args:
         executable: /bin/bash
-      become: true
+
+    - name: Create app directory
+      file:
+        path: /home/ec2-user/app
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+
+    - name: Copy docker-compose.yml to server
+      copy:
+        src: ../docker-compose.yml
+        dest: /home/ec2-user/app/docker-compose.yml
+        owner: ec2-user
+        group: ec2-user
+        mode: '0644'
+
+    - name: Docker login
+      shell: echo "{{ docker_hub_password }}" | docker login -u "{{ docker_hub_username }}" --password-stdin
+      when: docker_hub_username is defined and docker_hub_password is defined
+
+    - name: Pull latest images
+      shell: docker-compose pull
+      args:
+        chdir: /home/ec2-user/app
 
     - name: Run docker-compose
       shell: docker-compose up -d
       args:
-        chdir: /home/ec2-user/{{repo_name}}
-      become: true
+        chdir: /home/ec2-user/app
