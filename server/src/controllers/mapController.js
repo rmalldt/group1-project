@@ -1,6 +1,9 @@
 require('dotenv').config();
 const axios = require('axios');
+const NodeCache = require('node-cache');
 const Ev = require('../models/evModel');
+
+const tokenCache = new NodeCache({ stdTTL: 3600 }); // cache valid for 1hr
 
 async function getAzureToken(req, res) {
   const {
@@ -9,6 +12,11 @@ async function getAzureToken(req, res) {
     AZURE_TENANT_ID,
     AZURE_BASE_URL,
   } = process.env;
+
+  let token = tokenCache.get('azure_token');
+  if (token) {
+    return res.status(200).json({ token: token });
+  }
 
   try {
     const tokenResponse = await axios.post(
@@ -21,7 +29,10 @@ async function getAzureToken(req, res) {
       }),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
-    res.status(200).json({ token: tokenResponse.data.access_token });
+
+    token = tokenResponse.data.access_token;
+    tokenCache.set('azure_token', token, tokenResponse.data.expires_in - 120); // expire 2 min before the original token expires
+    res.status(200).json({ token: token });
   } catch (err) {
     res.status(500).json({ error: 'Failed to get token' });
   }
@@ -72,4 +83,32 @@ async function getIsochrone(req, res) {
   }
 }
 
-module.exports = { getAzureToken, getIsochrone };
+async function getChargingStations(req, res) {
+  const { AZURE_SUBKEY, AZURE_BASE_URL } = process.env;
+
+  const { lat, lon } = req.query;
+
+  const params = {
+    'api-version': '1.0',
+    query: 'charging station',
+    lat: lat,
+    lon: lon,
+    radius: '100000',
+    limit: '100',
+    'subscription-key': AZURE_SUBKEY,
+  };
+
+  try {
+    const response = await axios.get(
+      `${AZURE_BASE_URL}/search/poi/category/json`,
+      {
+        params,
+      }
+    );
+    res.status(200).json({ success: true, data: response.data });
+  } catch (error) {
+    res.status(404).json({ error: 'Unable to fetch charging stations data' });
+  }
+}
+
+module.exports = { getAzureToken, getIsochrone, getChargingStations };
