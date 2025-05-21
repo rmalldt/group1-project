@@ -251,7 +251,7 @@ form div.incorrect input{
 
 /* DARK MODE!! */
 body.darkmode--activated {
-  --text-color: #f5f5f5;
+  /* --text-color: #f5f5f5; */
 }
 
 /* Submit button */
@@ -291,3 +291,6 @@ body.darkmode--activated form label svg {
 body.darkmode--activated a[href="./signin.html"] {
   color: #ff470f;
 }
+
+
+/* --text-color: #2E2B41; */
