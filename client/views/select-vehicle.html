@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/logo/favicon.png" type="image/png">
     <link rel="stylesheet" href="../styles/select-vehicle.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -15,7 +16,7 @@
  
     <main class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
         <div class="back-button-container">
-            <button class="back-button" onclick="window.location.href='signin.html'" aria-label="Log out">← Logout</button>
+            <button class="back-button" onclick="window.location.href='index.html'" aria-label="Log out">← Logout</button>
         </div>
         <div class="w-100" style="max-width: 400px;">
             <div class="logo">
@@ -42,10 +43,10 @@
                     class="img-fluid border placeholder-car" />
             </div>
  
-            <p><strong>Range:</strong> <span id="car-range"> --- </span> miles</p>
+            <p><strong>Range:</strong> <span id="car-range"> --- </span> km</p>
             <p><strong>Manufacturer:</strong> <span id="car-manufacturer"> --- </span></p>
  
-            <button id='vehicle-selection-button' type="button" onclick="window.location.href='map.html'" class="btn btn-dark w-100">Submit</button>
+            <button id='vehicle-selection-button' type="button" onclick="window.location.href='map.html'" class="submit-button">Submit</button>
         </div>
     </main>
  
