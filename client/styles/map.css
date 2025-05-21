@@ -250,3 +250,39 @@ button[type="submit"] {
   }
 }
 
+.darkmode-toggle {
+  z-index: 9999 !important;
+}
+
+
+/*  */
+body.darkmode--activated {
+  --base-color: #1a1a1a;
+  --text-color: #f5f5f5;
+  --input-color: #2a2a2a;
+  --accent-color: #64b4f6;
+}
+
+body.darkmode--activated {
+  background-color: var(--base-color);
+  color: var(--text-color);
+}
+
+body.darkmode--activated select,
+body.darkmode--activated input {
+  background-color: var(--input-color);
+  color: var(--text-color);
+}
+
+body.darkmode--activated .drawer {
+  background-color: rgba(30, 30, 30, 0.8);
+  backdrop-filter: blur(12px);
+}
+
+body.darkmode--activated button,
+body.darkmode--activated .submit-button,
+body.darkmode--activated #toggleDrawer,
+body.darkmode--activated #backButton {
+  background-color: var(--accent-color);
+  color: var(--base-color);
+}
