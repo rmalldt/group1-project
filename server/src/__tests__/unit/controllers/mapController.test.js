@@ -101,9 +101,20 @@ describe('Map Controller', () => {
 
   describe('getAzureToken', () => {
     let testToken;
+    let mockReq;
 
     beforeEach(() => {
       testToken = 'my-token-123';
+      mockReq = {
+        query: {
+          model: 'Q4 e-tron',
+          lat: '51.46452',
+          lon: '-0.41526',
+          batteryCharge: '1',
+          weatherConditionDifferential: '1',
+          passengerDifferential: '1',
+        },
+      };
     });
 
     it('should return valid token with the status code 200 on successful azure authentication', async () => {
@@ -129,5 +140,18 @@ describe('Map Controller', () => {
         error: 'Failed to get token',
       });
     });
+    
+    it('should return 404 if Ev.getEvByModel returns object without data', async () => {
+      Ev.getEvByModel.mockResolvedValue({ data: null, message: 'not found' });
+
+      await mapController.getIsochrone(mockReq, mockRes);
+
+      expect(Ev.getEvByModel).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+      error: 'Unable to fetch isochrone data',
+      });
+    });
+
   });
 });
