@@ -24,6 +24,10 @@ let chargingStationSource;
 let chargingStationLayer;
 let originLat;
 let originLon;
+let userPinLayer;
+
+let userPinLayerAdded = false;
+let chargingStationLayerAdded = false;
 
 const drawer = document.getElementById('drawer');
 const toggleBtn = document.getElementById('toggleDrawer');
@@ -62,14 +66,26 @@ document.getElementById('settingsForm').addEventListener('submit', async e => {
     new atlas.data.Feature(new atlas.data.Point([originLon, originLat]))
   );
 
-  map.layers.add(
-    new atlas.layer.SymbolLayer(userPinSource, null, {
-      iconOptions: {
-        image: 'pin-round-darkblue',
-        anchor: 'bottom',
-      },
-    })
-  );
+  // map.layers.add(
+  //   new atlas.layer.SymbolLayer(userPinSource, null, {
+  //     iconOptions: {
+  //       image: 'pin-red',
+  //       anchor: 'bottom',
+  //     },
+  //   })
+  // );
+
+  if (userPinLayer) {
+    map.layers.remove(userPinLayer);
+  }
+
+  userPinLayer = new atlas.layer.SymbolLayer(userPinSource, null, {
+    iconOptions: {
+      image: 'pin-red',
+      anchor: 'bottom',
+    },
+  });
+  map.layers.add(userPinLayer);
 
   await fetchIsochrone(
     userSelectedModel,
@@ -84,6 +100,8 @@ document.getElementById('settingsForm').addEventListener('submit', async e => {
   if (batteryCharge === 0.25) {
     await getChargingStations(originLat, originLon);
   }
+
+  drawer.classList.remove("open")
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -125,14 +143,23 @@ document.addEventListener('DOMContentLoaded', async function () {
       new atlas.data.Feature(new atlas.data.Point([originLon, originLat]))
     );
 
-    map.layers.add(
-      new atlas.layer.SymbolLayer(userPinSource, null, {
-        iconOptions: {
-          image: 'pin-round-darkblue',
-          anchor: 'bottom',
-        },
-      })
-    );
+    // map.layers.add(
+    //   new atlas.layer.SymbolLayer(userPinSource, null, {
+    //     iconOptions: {
+    //       image: 'pin-red',
+    //       anchor: 'bottom',
+    //     },
+    //   })
+    // );
+
+      userPinLayer = new atlas.layer.SymbolLayer(userPinSource, null, {
+      iconOptions: {
+        image: 'pin-red',
+        anchor: 'bottom',
+      },
+    });
+        map.layers.add(userPinLayer);
+
 
     polygonLayer = new atlas.layer.PolygonLayer(dataSource, null, {
       fillColor: 'rgba(0,136,255,0.4)',
@@ -147,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       null,
       {
         iconOptions: {
-          image: 'pin-red',
+          image: 'pin-darkblue',
           anchor: 'bottom',
         },
       }
@@ -221,6 +248,8 @@ async function getChargingStations(lat, lon) {
     );
     const resData = await response.json();
     const stations = resData.data.results;
+
+    chargingStationSource.clear();
 
     stations.forEach(station => {
       const feature = new atlas.data.Feature(
