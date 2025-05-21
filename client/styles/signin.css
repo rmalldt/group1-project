@@ -33,7 +33,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
 }
 
 .logo-img {
@@ -43,15 +42,15 @@ body {
 
 
 h1{
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 500;
     text-transform: uppercase;
 }
 
 form{
     width: min(400px, 100%);
-    margin-top: 20px;
-    margin-bottom: 50px;
+    margin-top: 20px; 
+    margin-bottom: 50px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -123,6 +122,25 @@ form button:hover{
     background-color: var(--text-color);
 }
 
+.back-button-container {
+  width: min(400px, 100%);
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  color: var(--text-color);
+  border: none;
+  background-color: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  color: var(--accent-color);
+}
+
 a{
     text-decoration: none;
     color: var(--accent-color);
@@ -131,6 +149,79 @@ a{
 @media (max-width: 500px) {
   body {
     padding: 0 1rem;
+  }
+    form {
+    width: 80%;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    gap: 8px;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    font-size: 0.5rem;
+  }
+  .back-button-container{
+    width: 80%;
+  }
+}
+
+@media (max-height: 450px) {
+  body {
+    padding: 0.5rem 1rem;
+    justify-content: center;
+  }
+
+  .logo-img {
+    width: 60px;
+    margin-top: 0.2rem;
+  }
+
+  h1 {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  form {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    gap: 5px;
+  }
+
+  form label {
+    height: 36px;
+    width: 36px;
+    font-size: 1rem;
+  }
+
+  form input {
+    height: 36px;
+    font-size: 0.75rem;
+    padding: 0.6em;
+  }
+
+  form button {
+    padding: 0.4em 1.5em;
+    font-size: 0.75rem;
+    margin-top: 5px;
+  }
+
+  .back-button-container {
+    margin-bottom: 5px;
+  }
+
+  .back-button {
+    font-size: 0.75rem;
+  }
+
+  a {
+    font-size: 0.75rem;
+  }
+
+  #error-message {
+    font-size: 0.75rem;
   }
 }
 
