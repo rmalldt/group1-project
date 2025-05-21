@@ -24,6 +24,8 @@ let chargingStationSource;
 let chargingStationLayer;
 let originLat;
 let originLon;
+let darkModeActive = false; // Raf added: Track what the current mode is
+
 
 const drawer = document.getElementById('drawer');
 const toggleBtn = document.getElementById('toggleDrawer');
@@ -99,6 +101,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   map = new atlas.Map('myMap', {
     center: [originLon, originLat],
     zoom: 5,
+    style: 'road', //raf added this to initialse the map in road mode
+
     authOptions: {
       authType: 'anonymous',
       clientId: 'e9a2d010-67fb-4471-831f-a7adcc434fb8',
@@ -168,7 +172,22 @@ document.addEventListener('DOMContentLoaded', async function () {
       passengerDifferential
     );
   });
+
+    const darkToggleBtn = document.getElementById('darkModeToggle');
+  darkToggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    darkModeActive = !darkModeActive;
+
+    if (darkModeActive) {
+      map.setStyle({ style: 'grayscale_dark' });
+    } else {
+      map.setStyle({ style: 'road' });
+    }
+  });
+
 });
+
+
 
 // ------------------
 
