@@ -2,8 +2,12 @@ require('dotenv').config();
 const axios = require('axios');
 const NodeCache = require('node-cache');
 const Ev = require('../models/evModel');
+const {
+  prepareCoordinates,
+  findMinMaxCoordinates,
+} = require('../utils/coordinates');
 
-const tokenCache = new NodeCache({ stdTTL: 3600 }); // cache valid for 1hr
+const tokenCache = new NodeCache({ stdTTL: 3600 }); // default TTL 1hr
 
 async function getAzureToken(req, res) {
   const {
@@ -31,7 +35,7 @@ async function getAzureToken(req, res) {
     );
 
     token = tokenResponse.data.access_token;
-    tokenCache.set('azure_token', token, tokenResponse.data.expires_in - 120); // expire 2 min before the original token expires
+    tokenCache.set('azure_token', token, tokenResponse.data.expires_in - 120); // expires 2 mins before the original token expires
     res.status(200).json({ token: token });
   } catch (err) {
     res.status(500).json({ error: 'Failed to get token' });
@@ -77,6 +81,13 @@ async function getIsochrone(req, res) {
     const response = await axios.get(`${AZURE_BASE_URL}/route/range/json`, {
       params,
     });
+
+    const { center, boundary } = response.data.reachableRange;
+    const mainCoord = [center.longitude, center.latitude];
+    const coords = prepareCoordinates(boundary);
+    const minmaxCoords = findMinMaxCoordinates(mainCoord, coords);
+    response.data.reachableRange.minmax = minmaxCoords;
+
     res.status(200).json({ success: true, data: response.data });
   } catch (err) {
     res.status(404).json({ error: 'Unable to fetch isochrone data' });
@@ -85,9 +96,7 @@ async function getIsochrone(req, res) {
 
 async function getChargingStations(req, res) {
   const { AZURE_SUBKEY, AZURE_BASE_URL } = process.env;
-
   const { lat, lon } = req.query;
-
   const params = {
     'api-version': '1.0',
     query: 'charging station',
