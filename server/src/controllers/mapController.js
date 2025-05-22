@@ -105,6 +105,7 @@ async function getChargingStations(req, res) {
         params,
       }
     );
+
     res.status(200).json({ success: true, data: response.data });
   } catch (error) {
     res.status(404).json({ error: 'Unable to fetch charging stations data' });
