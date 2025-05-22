@@ -25,7 +25,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     localStorage.setItem("userId", data.userId);
     localStorage.setItem("postcode", data.start_location);
 
-    alert("Login successful!");
+    // alert("Login successful!");
     window.location.assign("./select-vehicle.html"); 
   } else {
     alert(data.error || "Login failed.");
