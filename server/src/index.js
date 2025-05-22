@@ -6,10 +6,10 @@ const cors = require('cors');
 const api = require('./api');
 const port = process.env.PORT || 3000;
 
-// ✅ Enable CORS (add this line before routes are used)
+//  Enable CORS (added this line before routes are used) - RAF added for his machine
 api.use(cors());
 
-// Optional: Log all incoming requests
+//  Log all incoming requests
 api.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
