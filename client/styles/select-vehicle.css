@@ -165,7 +165,8 @@ h1 {
 
  /* DARK MODE!! */
 body.darkmode--activated {
-  --text-color: #392929;
+  /* --text-color: #392929; */
+    --text-color: #2E2B41;
 }
 
 /* Submit & Back buttons */
@@ -188,4 +189,11 @@ body.darkmode--activated p,
 body.darkmode--activated strong,
 body.darkmode--activated span {
   color: var(--text-color);
+}
+
+
+#car-image {
+    border: none !important;
+    box-shadow: none !important;
+    /* in case shadow is also giving a border effect */
 }
