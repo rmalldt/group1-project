@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './config.js';
+
 document.getElementById("register-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -37,7 +39,7 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
         }
 
     // Send to the server
-        const response = await fetch("http://localhost:3000/users/signup", {
+        const response = await fetch(`${API_BASE_URL}/users/signup`, {
             method: "POST",
             headers: {
             'Accept': 'application/json',

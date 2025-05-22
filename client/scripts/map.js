@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './config.js';
+
 async function postCodeToLatLng(postcode) {
   let latlng;
   try {
@@ -114,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       authType: 'anonymous',
       clientId: 'e9a2d010-67fb-4471-831f-a7adcc434fb8',
       getToken: function (resolve, reject, map) {
-        fetch('http://localhost:3000/maps/azure-token')
+        fetch(`${API_BASE_URL}/maps/azure-token`)
           .then(res => res.json())
           .then(data => resolve(data.token))
           .catch(err => reject(err));
@@ -223,7 +225,11 @@ async function fetchIsochrone(
   weatherConditionDifferential,
   passengerDifferential
 ) {
-  const isoUrl = `http://localhost:3000/maps/isochrone?model=${userSelectedModel}&lat=${originLat}&lon=${originLon}&batteryCharge=${batteryCharge}&weatherConditionDifferential=${weatherConditionDifferential}&passengerDifferential=${passengerDifferential}`;
+  const isoUrl = `${API_BASE_URL}/maps/isochrone?model=${userSelectedModel}
+  &lat=${originLat}&lon=${originLon}
+  &batteryCharge=${batteryCharge}
+  &weatherConditionDifferential=${weatherConditionDifferential}
+  &passengerDifferential=${passengerDifferential}`;
 
   console.log('Isochrone URL to pass to Azure API:', isoUrl);
 
@@ -256,7 +262,7 @@ async function fetchIsochrone(
 async function getChargingStations(lat, lon) {
   try {
     const response = await fetch(
-      `http://localhost:3000/maps/charging-stations?lat=${lat}&lon=${lon}`
+      `${API_BASE_URL}/maps/charging-stations?lat=${lat}&lon=${lon}`
     );
     const resData = await response.json();
     const stations = resData.data.results;

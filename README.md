@@ -1,6 +1,8 @@
 # Range IQ - the solution for range anxiety
 
-![Range IQ logo](pageimages/rangeIQ.png)
+![Range IQ logo](pageimages/rangeIQ.png) <br>
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
+
 
 ## Overview
 
