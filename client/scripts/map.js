@@ -17,70 +17,108 @@ async function postCodeToLatLng(postcode) {
 
 // Global map objects
 let map;
+let userPinSource;
 let dataSource;
 let polygonLayer;
+let chargingStationSource;
+let chargingStationLayer;
+let originLat;
+let originLon;
+let darkModeActive = false; // Raf added: Track what the current mode is
+let userPinLayer;
+let userPinLayerAdded = false;
+let chargingStationLayerAdded = false;
 
-document.addEventListener('DOMContentLoaded', async function () {
-  const drawer = document.getElementById('drawer');
-  const toggleBtn = document.getElementById('toggleDrawer');
+const drawer = document.getElementById('drawer');
+const toggleBtn = document.getElementById('toggleDrawer');
 
-  toggleBtn.addEventListener('click', () => {
-    drawer.classList.toggle('open');
-  });
+toggleBtn.addEventListener('click', () => {
+  drawer.classList.toggle('open');
+});
 
-  document
-    .getElementById('settingsForm')
-    .addEventListener('submit', async e => {
-      e.preventDefault();
-
-      let postcode = document.getElementById('postcode-input').value.trim();
-      let batteryCharge = parseFloat(document.getElementById('battery').value);
-      let passengerDifferential = parseFloat(
-        document.getElementById('passengers').value
-      );
-      let weatherConditionDifferential =
-        document.getElementById('weather').value;
-
-      console.log('Form Submitted:');
-      console.log('Postcode:', postcode);
-      console.log('Battery:', batteryCharge);
-      console.log('Passengers:', passengerDifferential);
-      console.log('Weather:', weatherConditionDifferential);
-
-      let newCoords = await postCodeToLatLng(postcode);
-      console.log('NEW COORDS: ', newCoords);
-      originLat = newCoords.latitude;
-      originLon = newCoords.longitude;
-
-      await fetchIsochrone(
-        userSelectedModel,
-        originLat,
-        originLon,
-        batteryCharge,
-        weatherConditionDifferential,
-        passengerDifferential
-      );
-      drawer.classList.remove("open")
-    });
-
-
-  let postcode = localStorage.getItem('postcode') || 'S1 1AA'; // Fallback to S1 1AA if no postcode in localStorage
-  document.getElementById('postcode-input').value = postcode; // Prepopulate the postcode input box
-
-  const coords = await postCodeToLatLng(postcode);
-  let originLat = coords.latitude;
-  let originLon = coords.longitude;
-  console.log('Starting coordinates:', originLat, originLon);
+document.getElementById('settingsForm').addEventListener('submit', async e => {
+  e.preventDefault();
 
   let userSelectedModel = localStorage.getItem('carModel');
   console.log('User selected model:', userSelectedModel);
 
-  // ------------------------
+  let postcode = document.getElementById('postcode-input').value.trim();
+  let batteryCharge = parseFloat(document.getElementById('battery').value);
+  let passengerDifferential = parseFloat(
+    document.getElementById('passengers').value
+  );
+  let weatherConditionDifferential = document.getElementById('weather').value;
+
+  console.log('Form Submitted:');
+  console.log('Postcode:', postcode);
+  console.log('Battery:', batteryCharge);
+  console.log('Passengers:', passengerDifferential);
+  console.log('Weather:', weatherConditionDifferential);
+
+  let newCoords = await postCodeToLatLng(postcode);
+  console.log('NEW COORDS: ', newCoords);
+  originLat = newCoords.latitude;
+  originLon = newCoords.longitude;
+
+  // Add stable user pin
+  userPinSource.clear();
+  userPinSource.add(
+    new atlas.data.Feature(new atlas.data.Point([originLon, originLat]))
+  );
+
+  // map.layers.add(
+  //   new atlas.layer.SymbolLayer(userPinSource, null, {
+  //     iconOptions: {
+  //       image: 'pin-red',
+  //       anchor: 'bottom',
+  //     },
+  //   })
+  // );
+
+  if (userPinLayer) {
+    map.layers.remove(userPinLayer);
+  }
+
+  userPinLayer = new atlas.layer.SymbolLayer(userPinSource, null, {
+    iconOptions: {
+      image: 'pin-red',
+      anchor: 'bottom',
+    },
+  });
+  map.layers.add(userPinLayer);
+
+  await fetchIsochrone(
+    userSelectedModel,
+    originLat,
+    originLon,
+    batteryCharge,
+    weatherConditionDifferential,
+    passengerDifferential
+  );
+
+  chargingStationSource.clear();
+  if (batteryCharge === 0.25) {
+    await getChargingStations(originLat, originLon);
+  }
+
+  drawer.classList.remove("open")
+});
+
+document.addEventListener('DOMContentLoaded', async function () {
+  let postcode = localStorage.getItem('postcode') || 'S1 1AA'; // Fallback to S1 1AA if no postcode in localStorage
+  document.getElementById('postcode-input').value = postcode; // Prepopulate the postcode input box
+
+  const coords = await postCodeToLatLng(postcode);
+  originLat = coords.latitude;
+  originLon = coords.longitude;
+  console.log('Starting coordinates:', originLat, originLon);
 
   // Initialise the map
   map = new atlas.Map('myMap', {
     center: [originLon, originLat],
     zoom: 5,
+    style: 'road', //raf added this to initialse the map in road mode
+
     authOptions: {
       authType: 'anonymous',
       clientId: 'e9a2d010-67fb-4471-831f-a7adcc434fb8',
@@ -94,29 +132,63 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
 
   map.events.add('ready', async () => {
-    console.log('READY:');
+    console.log('READY');
+    userPinSource = new atlas.source.DataSource();
     dataSource = new atlas.source.DataSource();
+    chargingStationSource = new atlas.source.DataSource();
+    map.sources.add(userPinSource);
     map.sources.add(dataSource);
+    map.sources.add(chargingStationSource);
+
+    // Add stable user pin
+    userPinSource.add(
+      new atlas.data.Feature(new atlas.data.Point([originLon, originLat]))
+    );
+
+    // map.layers.add(
+    //   new atlas.layer.SymbolLayer(userPinSource, null, {
+    //     iconOptions: {
+    //       image: 'pin-red',
+    //       anchor: 'bottom',
+    //     },
+    //   })
+    // );
+
+      userPinLayer = new atlas.layer.SymbolLayer(userPinSource, null, {
+      iconOptions: {
+        image: 'pin-red',
+        anchor: 'bottom',
+      },
+    });
+        map.layers.add(userPinLayer);
+
 
     polygonLayer = new atlas.layer.PolygonLayer(dataSource, null, {
-      fillColor: 'rgb(0, 136, 255)',
-      strokeColor: 'blue',
+      fillColor: 'rgba(0,136,255,0.4)',
+      strokeColor: '#0088ff',
       strokeWidth: 2,
     });
 
-    console.log('Map is ready');
-    console.log('User selected model:', userSelectedModel);
+    map.layers.add(polygonLayer);
 
-    if (!userSelectedModel) {
-      console.error('No car model selected. Please select a car model.');
-      window.location.replace('/client/views/select-vehicle.html');
-    }
+    chargingStationLayer = new atlas.layer.SymbolLayer(
+      chargingStationSource,
+      null,
+      {
+        iconOptions: {
+          image: 'pin-darkblue',
+          anchor: 'bottom',
+        },
+      }
+    );
+    map.layers.add(chargingStationLayer);
 
-    let batteryCharge = 1;
-    let weatherConditionDifferential = 1;
-    let passengerDifferential = 1; // initial map renders with these variable values
+    const userSelectedModel = localStorage.getItem('carModel');
+    const batteryCharge = 1;
+    const weatherConditionDifferential = 1;
+    const passengerDifferential = 1;
 
-    fetchIsochrone(
+    await fetchIsochrone(
       userSelectedModel,
       originLat,
       originLon,
@@ -125,7 +197,24 @@ document.addEventListener('DOMContentLoaded', async function () {
       passengerDifferential
     );
   });
+
+
+  // Raf added: Dark mode toggle
+    const darkToggleBtn = document.getElementById('darkModeToggle');
+  darkToggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    darkModeActive = !darkModeActive;
+
+    if (darkModeActive) {
+      map.setStyle({ style: 'grayscale_dark' });
+    } else {
+      map.setStyle({ style: 'road' });
+    }
+  });
+
 });
+
+
 
 // ------------------
 
@@ -160,14 +249,34 @@ async function fetchIsochrone(
     // Create a GeoJSON Polygon from the boundary
     const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
     dataSource.clear();
-    dataSource.add(isochronePolygon);
+    dataSource.add(new atlas.data.Feature(isochronePolygon));
 
-    // Add a PolygonLayer to style the fill and outline
-    map.layers.add(polygonLayer);
-
-    // Zoom the map to the polygon bounds
-    map.setCamera({ bounds: dataSource.getBounds(), padding: 20 });
+    map.setCamera({
+      bounds: atlas.data.BoundingBox.fromData([isochronePolygon]),
+      padding: 20,
+    });
   } catch (err) {
     console.error('Error: ', err);
+  }
+}
+
+async function getChargingStations(lat, lon) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/maps/charging-stations?lat=${lat}&lon=${lon}`
+    );
+    const resData = await response.json();
+    const stations = resData.data.results;
+
+    chargingStationSource.clear();
+
+    stations.forEach(station => {
+      const feature = new atlas.data.Feature(
+        new atlas.data.Point([station.position.lon, station.position.lat])
+      );
+      chargingStationSource.add(feature);
+    });
+  } catch (err) {
+    console.log('Could not fetch ev charging stations: ', err);
   }
 }

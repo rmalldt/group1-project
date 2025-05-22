@@ -16,7 +16,8 @@
     "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.15.6",
-    "python3": "^0.0.1"
+    "python3": "^0.0.1",
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

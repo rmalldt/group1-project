@@ -245,3 +245,52 @@ form div.incorrect input{
 #error-message{
     color: #f06272;
 }
+
+
+/* Night MODE BUTTON! */
+
+/* DARK MODE!! */
+body.darkmode--activated {
+  /* --text-color: #f5f5f5; */
+}
+
+/* Submit button */
+body.darkmode--activated form button[type="submit"] {
+  background-color: rgba(255, 71, 15, 0.7);
+  color: var(--text-color);
+  border: none;
+}
+
+/* Inputs */
+body.darkmode--activated input#username-input,
+body.darkmode--activated input#password-input,
+body.darkmode--activated input#postcode-input,
+body.darkmode--activated input#email-input {
+  /* background-color: #2a2a2a; */
+  color: var(--text-color);
+  border: 2px solid #ff470f66;
+  border-left: none;
+}
+
+body.darkmode--activated input::placeholder {
+  color: #bbbbbb;
+}
+
+/* Label icons */
+body.darkmode--activated form label {
+  background-color: rgba(255, 71, 15, 0.7);
+  color: var(--text-color);
+  transition: background-color 150ms ease;
+}
+
+body.darkmode--activated form label svg {
+  fill: var(--text-color);
+}
+
+/* Link to Sign In */
+body.darkmode--activated a[href="./signin.html"] {
+  color: #ff470f;
+}
+
+
+/* --text-color: #2E2B41; */

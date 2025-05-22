@@ -1,9 +1,12 @@
+jest.mock('axios');
+jest.mock('../../../models/evModel');
+
 const axios = require('axios');
+const NodeCache = require('node-cache');
 const Ev = require('../../../models/evModel');
 const mapController = require('../../../controllers/mapController');
 
-jest.mock('axios');
-jest.mock('../../../models/evModel');
+const tokenCache = new NodeCache({ stdTTL: 3600 });
 
 const mockSend = jest.fn();
 const mockJson = jest.fn();
@@ -100,27 +103,40 @@ describe('Map Controller', () => {
   });
 
   describe('getAzureToken', () => {
-    let testToken;
+    const originalEnv = process.env;
     let mockReq;
 
     beforeEach(() => {
       testToken = 'my-token-123';
-      mockReq = {
-        query: {
-          model: 'Q4 e-tron',
-          lat: '51.46452',
-          lon: '-0.41526',
-          batteryCharge: '1',
-          weatherConditionDifferential: '1',
-          passengerDifferential: '1',
-        },
-      };
     });
 
-    it('should return valid token with the status code 200 on successful azure authentication', async () => {
+    it('should fetch a new token when the tokenCache is empty and return the token with status code 200', async () => {
+      // Arrange
+      const testToken = 'my-token-123';
+
+      jest.spyOn(tokenCache, 'get').mockReturnValue(null);
+
+      axios.post.mockResolvedValueOnce({
+        data: { access_token: testToken },
+      });
+
+      // Act
+      await mapController.getAzureToken(null, mockRes);
+
+      // Assert
+      expect(axios.post).toHaveBeenCalledWith(
+        `https://login.microsoftonline.com/test-tenant-id/oauth2/v2.0/token`,
+        expect.any(URLSearchParams),
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+      );
       axios.post.mockResolvedValue({ data: { access_token: testToken } });
 
-      await mapController.getAzureToken(null, mockRes);
+      const urlParamsArg = axios.post.mock.calls[0][1];
+      expect(urlParamsArg.get('client_id')).toBe('test-client-id');
+      expect(urlParamsArg.get('client_secret')).toBe('test-client-secret');
+      expect(urlParamsArg.get('scope')).toBe('https://test-api.com/.default');
+
+      expect(urlParamsArg.get('grant_type')).toBe('client_credentials');
 
       expect(axios.post).toHaveBeenCalledTimes(1);
       expect(mockStatus).toHaveBeenCalledWith(200);
@@ -129,16 +145,15 @@ describe('Map Controller', () => {
       });
     });
 
-    it('should return an error with status code 500 if the azure authentication fails', async () => {
-      axios.post.mockRejectedValue({ error: 'Failed to get token' });
+    it('should use cached token if available', async () => {
+      const testToken = 'my-token-123';
+      jest.spyOn(tokenCache, 'get').mockReturnValue(testToken);
 
       await mapController.getAzureToken(null, mockRes);
 
-      expect(axios.post).toHaveBeenCalledTimes(1);
-      expect(mockStatus).toHaveBeenCalledWith(500);
-      expect(mockJson).toHaveBeenCalledWith({
-        error: 'Failed to get token',
-      });
+      expect(axios.post).not.toHaveBeenCalled();
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith({ token: testToken });
     });
     
     it('should return 404 if Ev.getEvByModel returns object without data', async () => {

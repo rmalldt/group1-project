@@ -158,3 +158,42 @@ h1 {
         padding: 0 1rem;
     }
 }
+
+
+/* 
+ */
+
+ /* DARK MODE!! */
+body.darkmode--activated {
+  /* --text-color: #392929; */
+    --text-color: #2E2B41;
+}
+
+/* Submit & Back buttons */
+body.darkmode--activated .submit-button{
+  background-color: rgba(255, 71, 15, 0.7);
+  color: var(--text-color);
+  border: none;
+}
+
+/* Dropdown */
+body.darkmode--activated select#vehicle-dropdown {
+  /* background-color: #2a2a2a; */
+  color: var(--text-color);
+  border: 2px solid #ff470f66;
+}
+
+/* Page text */
+body.darkmode--activated h1,
+body.darkmode--activated p,
+body.darkmode--activated strong,
+body.darkmode--activated span {
+  color: var(--text-color);
+}
+
+
+#car-image {
+    border: none !important;
+    box-shadow: none !important;
+    /* in case shadow is also giving a border effect */
+}

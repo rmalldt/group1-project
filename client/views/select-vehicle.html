@@ -39,7 +39,7 @@
             </section>
  
             <div class="d-flex justify-content-center mb-3">
-                <img id="car-image" src="../assets/images/car-outline.jpg" alt="EV image"
+                <img id="car-image" src="../assets/images/vecteezy_white-electric-car-modern-style_19898830.png" alt="EV image"
                     class="img-fluid border placeholder-car" />
             </div>
  
@@ -49,7 +49,25 @@
             <button id='vehicle-selection-button' type="button" onclick="window.location.href='map.html'" class="submit-button">Submit</button>
         </div>
     </main>
- 
+        <script src="https://unpkg.com/darkmode-js@1.3.4/lib/darkmode-js.js"></script>
+        <script>
+            const options = {
+                bottom: '32px', // default: '32px'
+                right: '32px',  // default: '32px'
+                left: 'unset',  // default: 'unset'
+                time: '0.5s',   // default: '0.3s'
+                mixColor: '#fff',
+                backgroundColor: '#fff',  // default: '#fff'
+                buttonColorDark: '#100f2c',  // default: '#100f2c'
+                buttonColorLight: '#fff',    // default: '#fff'
+                saveInCookies: true,
+                label: '🌓',
+                autoMatchOsTheme: true
+            }
+
+            const darkmode = new Darkmode(options);
+            darkmode.showWidget();
+        </script>
 </body>
  
 </html>
