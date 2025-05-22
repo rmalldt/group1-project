@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home</title>
+  <link rel="icon" href="../assets/logo/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../styles/index.css">
+  <script src="../scripts/index.js" defer></script>
+</head>
+<body>
+
+  <div class="scroll-container">
+    <img src="../assets/logo/logo-side-white.svg" alt="Logo" class="logo" />
+    
+    <section class="section" id="section-1">
+  <div class="section-content">
+    <img src="../assets/images/iphone-index.png" class="iphone-image" alt="iPhone preview" > 
+    <h1>Welcome to RangeIQ!</h1>
+    <p>Our app puts you in control of your electric journey—before it even begins.</p>
+  </div>
+  <button class="nav-button next" onclick="scrollToSection('section-2')"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg></button>
+</section>
+
+<section class="section" id="section-2">
+  <div class="section-content">
+    <img src="../assets/images/imac.png" class="mac-image" alt="Mac preview" >
+    <h1>See how far you can really go</h1>
+    <p>We all know range isn't a number. See your vehicle's range on the map according for weather, battery capasity, and more. </p>
+  </div>
+  <button class="nav-button prev" onclick="scrollToSection('section-1')"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg></button>
+  <button class="nav-button next" onclick="scrollToSection('section-3')"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg></button>
+</section>
+
+<section class="section" id="section-3">
+  <div class="section-content">
+    <img src="../assets/images/charging.png" class="charging-image" alt="Charging station preview" >
+    <h1>Find your next charge with ease</h1>
+        <p>Low on battery? If you're at 25% or less, we’ll guide you to the nearest charger within 10 km.</p>
+        <a href="signup.html" class="signup-button">Get Started!</a>
+  </div>
+  <button class="nav-button prev" onclick="scrollToSection('section-2')"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg></button>
+</section>
+
+
+  </div>
+
+</body>
+</html>
+ 

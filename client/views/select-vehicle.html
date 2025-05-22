@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/logo/favicon.png" type="image/png">
+    <link rel="stylesheet" href="../styles/select-vehicle.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="module" src="../scripts/select-vehicle.js" defer></script>
+    <title>Select Vehicle</title>
+</head>
+ 
+<body>
+ 
+    <main class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <div class="back-button-container">
+            <button class="back-button" onclick="window.location.href='index.html'" aria-label="Log out">← Logout</button>
+        </div>
+        <div class="w-100" style="max-width: 400px;">
+            <div class="logo">
+                <img src="../assets/logo/logo_vector.svg" class="logo-img" alt="logo-image">
+            </div>
+            <header>
+                <h1>Select Your Vehicle</h1>
+                <p>Please choose the electric vehicle you'd like to explore.</p>
+            </header>
+ 
+            <section class="vehicle-select">
+                <label for="vehicle-dropdown"></label>
+                <select id="vehicle-dropdown" name="vehicle" required>
+                    <option value="">-- Select your EV model --</option>
+                    <option value="Model 3 Standard Range Plus">Tesla Model 3</option>
+                    <option value="e-Niro 64 kWh">Kia e-Niro</option>
+                    <option value="e-tron GT">Audi e-tron GT</option>
+                    <option value="iX3">BMW iX3</option>
+                </select>
+            </section>
+ 
+            <div class="d-flex justify-content-center mb-3">
+                <img id="car-image" src="../assets/images/vecteezy_white-electric-car-modern-style_19898830.png" alt="EV image"
+                    class="img-fluid border placeholder-car" />
+            </div>
+ 
+            <p><strong>Range:</strong> <span id="car-range"> --- </span> km</p>
+            <p><strong>Manufacturer:</strong> <span id="car-manufacturer"> --- </span></p>
+ 
+            <button id='vehicle-selection-button' type="button" onclick="window.location.href='map.html'" class="submit-button">Submit</button>
+        </div>
+    </main>
+        <script src="https://unpkg.com/darkmode-js@1.3.4/lib/darkmode-js.js"></script>
+        <script>
+            const options = {
+                bottom: '32px', // default: '32px'
+                right: '22px',  // default: '32px'
+                left: 'unset',  // default: 'unset'
+                time: '0.5s',   // default: '0.3s'
+                mixColor: '#fff',
+                backgroundColor: '#fff',  // default: '#fff'
+                buttonColorDark: '#100f2c',  // default: '#100f2c'
+                buttonColorLight: '#fff',    // default: '#fff'
+                saveInCookies: true,
+                label: '🌓',
+                autoMatchOsTheme: true
+            }
+
+            const darkmode = new Darkmode(options);
+            darkmode.showWidget();
+        </script>
+</body>
+ 
+</html>

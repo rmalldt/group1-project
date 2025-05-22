@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "cypress": "^14.3.3"
+  },
+  "scripts": {
+    "cypress": "npx cypress open --browser chrome"
+  }
+}
