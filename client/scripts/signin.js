@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './config.js';
+
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault(); 
 
@@ -16,7 +18,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     })
   };
 
-  const response = await fetch("http://localhost:3000/users/login", options);
+  const response = await fetch(`${API_BASE_URL}/users/login`, options);
   const data = await response.json();
 
   if (response.status === 200 && data.token) {
