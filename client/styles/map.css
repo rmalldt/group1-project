@@ -217,7 +217,7 @@ button[type="submit"] {
   font-size: 1rem;
 }
 
-button[type="dark"] {
+/* button[type="dark"] {
   background-color: var(--accent-color);
   color: var(--base-color);
   font-weight: bold;
@@ -226,7 +226,7 @@ button[type="dark"] {
   border-radius: 0.8rem;
   cursor: pointer;
   font-size: 1rem;
-}
+} */
 
 @media (max-height: 420px) {
   .drawer {
