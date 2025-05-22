@@ -2,7 +2,7 @@
   "name": "client",
   "version": "1.0.0",
   "scripts": {
-    "start": "parcel ./*.html",
+    "start": "parcel ./views/*.html",
     "build": "parcel build ./*.html --dist-dir ./dist",
     "test": "jest --detectOpenHandles --runInBand --verbose",
     "coverage": "jest --coverage"
