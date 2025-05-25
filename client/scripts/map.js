@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './config.js';
+
 async function postCodeToLatLng(postcode) {
   let latlng;
   try {
@@ -24,8 +26,8 @@ let chargingStationSource;
 let chargingStationLayer;
 let originLat;
 let originLon;
+let darkModeActive = false; // Raf added: Track what the current mode is
 let userPinLayer;
-
 let userPinLayerAdded = false;
 let chargingStationLayerAdded = false;
 
@@ -66,15 +68,6 @@ document.getElementById('settingsForm').addEventListener('submit', async e => {
     new atlas.data.Feature(new atlas.data.Point([originLon, originLat]))
   );
 
-  // map.layers.add(
-  //   new atlas.layer.SymbolLayer(userPinSource, null, {
-  //     iconOptions: {
-  //       image: 'pin-red',
-  //       anchor: 'bottom',
-  //     },
-  //   })
-  // );
-
   if (userPinLayer) {
     map.layers.remove(userPinLayer);
   }
@@ -101,12 +94,12 @@ document.getElementById('settingsForm').addEventListener('submit', async e => {
     await getChargingStations(originLat, originLon);
   }
 
-  drawer.classList.remove("open")
+  drawer.classList.remove("open");
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
-  let postcode = localStorage.getItem('postcode') || 'S1 1AA'; // Fallback to S1 1AA if no postcode in localStorage
-  document.getElementById('postcode-input').value = postcode; // Prepopulate the postcode input box
+  let postcode = localStorage.getItem('postcode') || 'S1 1AA';
+  document.getElementById('postcode-input').value = postcode;
 
   const coords = await postCodeToLatLng(postcode);
   originLat = coords.latitude;
@@ -117,11 +110,13 @@ document.addEventListener('DOMContentLoaded', async function () {
   map = new atlas.Map('myMap', {
     center: [originLon, originLat],
     zoom: 5,
+    style: 'road', // raf added this to initialise the map in road mode
+
     authOptions: {
       authType: 'anonymous',
       clientId: 'e9a2d010-67fb-4471-831f-a7adcc434fb8',
       getToken: function (resolve, reject, map) {
-        fetch('http://localhost:3000/maps/azure-token')
+        fetch(`${API_BASE_URL}/maps/azure-token`)
           .then(res => res.json())
           .then(data => resolve(data.token))
           .catch(err => reject(err));
@@ -143,23 +138,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       new atlas.data.Feature(new atlas.data.Point([originLon, originLat]))
     );
 
-    // map.layers.add(
-    //   new atlas.layer.SymbolLayer(userPinSource, null, {
-    //     iconOptions: {
-    //       image: 'pin-red',
-    //       anchor: 'bottom',
-    //     },
-    //   })
-    // );
-
-      userPinLayer = new atlas.layer.SymbolLayer(userPinSource, null, {
+    userPinLayer = new atlas.layer.SymbolLayer(userPinSource, null, {
       iconOptions: {
         image: 'pin-red',
         anchor: 'bottom',
       },
     });
-        map.layers.add(userPinLayer);
-
+    map.layers.add(userPinLayer);
 
     polygonLayer = new atlas.layer.PolygonLayer(dataSource, null, {
       fillColor: 'rgba(0,136,255,0.4)',
@@ -195,6 +180,39 @@ document.addEventListener('DOMContentLoaded', async function () {
       passengerDifferential
     );
   });
+
+  // Raf added: Dark mode toggle button manually
+  const darkToggleBtn = document.getElementById('darkModeToggle');
+  darkToggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    darkModeActive = !darkModeActive;
+
+    if (darkModeActive) {
+      map.setStyle({ style: 'grayscale_dark' });
+    } else {
+      map.setStyle({ style: 'road' });
+    }
+  });
+
+  // Raf added: Observer for plugin-based dark mode toggling
+  const bodyObserver = new MutationObserver(mutations => {
+    for (let mutation of mutations) {
+      if (mutation.attributeName === 'class') {
+        const bodyHasDarkMode = document.body.classList.contains('darkmode--activated');
+
+        if (bodyHasDarkMode && !darkModeActive) {
+          map.setStyle({ style: 'grayscale_dark' });
+          darkModeActive = true;
+        } else if (!bodyHasDarkMode && darkModeActive) {
+          map.setStyle({ style: 'road' });
+          darkModeActive = false;
+        }
+      }
+    }
+  });
+
+  // Start observing the body class for dark mode plugin changes
+  bodyObserver.observe(document.body, { attributes: true });
 });
 
 // ------------------
@@ -207,7 +225,11 @@ async function fetchIsochrone(
   weatherConditionDifferential,
   passengerDifferential
 ) {
-  const isoUrl = `http://localhost:3000/maps/isochrone?model=${userSelectedModel}&lat=${originLat}&lon=${originLon}&batteryCharge=${batteryCharge}&weatherConditionDifferential=${weatherConditionDifferential}&passengerDifferential=${passengerDifferential}`;
+  const isoUrl = `${API_BASE_URL}/maps/isochrone?model=${userSelectedModel}
+  &lat=${originLat}&lon=${originLon}
+  &batteryCharge=${batteryCharge}
+  &weatherConditionDifferential=${weatherConditionDifferential}
+  &passengerDifferential=${passengerDifferential}`;
 
   console.log('Isochrone URL to pass to Azure API:', isoUrl);
 
@@ -224,10 +246,6 @@ async function fetchIsochrone(
     ]);
     console.log('Boundary coordinates:', boundaryCoords);
 
-    // Ideally we would find a way to double the number of points in the boundary to make the polygon
-    // smoother, which we would need to do after the fetch(isoUrl) call. Can we write a function that
-    // takes the mean between each set of two points and add them as elements to the boundaryCoords array?
-    // Create a GeoJSON Polygon from the boundary
     const isochronePolygon = new atlas.data.Polygon([boundaryCoords]);
     dataSource.clear();
     dataSource.add(new atlas.data.Feature(isochronePolygon));
@@ -244,7 +262,7 @@ async function fetchIsochrone(
 async function getChargingStations(lat, lon) {
   try {
     const response = await fetch(
-      `http://localhost:3000/maps/charging-stations?lat=${lat}&lon=${lon}`
+      `${API_BASE_URL}/maps/charging-stations?lat=${lat}&lon=${lon}`
     );
     const resData = await response.json();
     const stations = resData.data.results;

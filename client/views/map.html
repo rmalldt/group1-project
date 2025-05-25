@@ -99,8 +99,11 @@
       </label>
       </div>
       </div>
-
-      <button type="submit">Apply</button>
+      <div>
+        <button type="submit">Apply</button>
+        <!-- raf added this dark mode map toggle -->
+        <button type="dark" id="darkModeToggle" type="button"></button>
+      </div>
     </form>
   </div>
 
@@ -113,7 +116,7 @@
           <script>
             const options = {
               bottom: '32px', // default: '32px'
-              right: '32px',  // default: '32px'
+              right: '22px',  // default: '32px'
               left: 'unset',  // default: 'unset'
               time: '0.5s',   // default: '0.3s'
               mixColor: '#fff',
@@ -127,5 +130,6 @@
 
             const darkmode = new Darkmode(options);
             darkmode.showWidget();
+            console.log('Darkmode widget loaded');
           </script>
 </html>

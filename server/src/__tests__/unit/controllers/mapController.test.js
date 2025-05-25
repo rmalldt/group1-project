@@ -167,4 +167,62 @@ describe('Map Controller', () => {
       expect(mockJson).toHaveBeenCalledWith({ token: testToken });
     });
   });
+
+  describe('getChargingStations', () => {
+    let testResponseData, mockReq;
+
+    beforeEach(() => {
+      process.env.AZURE_SUBKEY = 'test-key';
+      process.env.AZURE_BASE_URL = 'https://atlas.microsoft.com';
+
+      mockReq = {
+        query: {
+          lat: '51.46452',
+          lon: '-0.41526',
+        },
+      };
+
+      jest.clearAllMocks();
+    });
+
+    it('should return the charging stations data and return the data with the status code 200 on success', async () => {
+      const mockData = { results: [{ id: 1, name: 'Station A' }] };
+
+      axios.get.mockResolvedValue({ data: mockData });
+
+      await mapController.getChargingStations(mockReq, mockRes);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://atlas.microsoft.com/search/poi/category/json',
+        {
+          params: {
+            'api-version': '1.0',
+            query: 'charging station',
+            lat: '51.46452',
+            lon: '-0.41526',
+            radius: '100000',
+            limit: '100',
+            'subscription-key': 'test-key',
+          },
+        }
+      );
+
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith({
+        success: true,
+        data: mockData,
+      });
+    });
+
+    it('should handle errors and return 404', async () => {
+      axios.get.mockRejectedValue(new Error('API failure'));
+
+      await mapController.getChargingStations(mockReq, mockRes);
+
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: 'Unable to fetch charging stations data',
+      });
+    });
+  });
 });
