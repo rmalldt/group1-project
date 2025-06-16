@@ -83,11 +83,10 @@ async function getIsochrone(req, res) {
     });
 
     const { center, boundary } = response.data.reachableRange;
-    const mainCoord = [center.longitude, center.latitude];
+    const centerCoord = [center.longitude, center.latitude];
     const coords = prepareCoordinates(boundary);
-    const minmaxCoords = findMinMaxCoordinates(mainCoord, coords);
+    const minmaxCoords = findMinMaxCoordinates(centerCoord, coords);
     response.data.reachableRange.minmax = minmaxCoords;
-
     res.status(200).json({ success: true, data: response.data });
   } catch (err) {
     res.status(404).json({ error: 'Unable to fetch isochrone data' });
